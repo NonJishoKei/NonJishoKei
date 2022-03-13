@@ -1,0 +1,110 @@
+转换程序支持格式：
+
+1) 扩展的SugarDict格式:
+
+每个项目（词条）一行，缺省最大为32K. 格式为: 关键字
+解释(就是关键字和解释之间用空格分开)
+
+关键字: 可以是大小写的组合, 每个单词的最大长度是255个字符。
+关键字和解释中的'_', '^'在转换后会被替换成空格和回车
+
+例子：
+break_through /'bri:k_MQru:/ ^v. 突破^n. 突破
+good ^adj.好^adj.贼好^adj.好得不得了
+
+2) KDict解码后的tab格式
+每个条目一行，关键字和解释之间用"tab"分隔. 其中的"\n"会被转换成换行
+
+例如:
+good	adj.好\nadj.贼好\nadj.好得不得了
+
+
+3) MDict的html格式
+每个项目两行
+第一行是关键字
+第二行开始是正文, 这里的正文应该包括关键字。可以使用html的标记(不要包含<html>
+<body></body></html>, 这个程序会自动加上, 另注意在转换时要指明源数据为html). 
+如果需要显示音标的话，可以利用html指定字体就可以显示了。(参见下面的例子)
+正文结束后必须用一行</>表示结束
+
+例子:
+Whole
+<font size=5>whole</font>
+<br>
+<font face="Kingsoft Phonetic Plain, Tahoma">(hol,hJl; houl)</font>
+</>
+
+(注意"</>"和下一个记录间不要有任何其他空行，请参考example.txt中的例子)
+
+在html中连接到其它关键字的方法：
+<a href="entry://key#section">key</a>
+其中key是关键字，section是对应关键字页面中的section名称.
+
+在html中嵌入图片的方法:(PC版的MDict 1.0以上版本才支持图片)
+<img src="file://abc.gif"> 或者 <img src="/abc.gif"> 其中src指向的文件名大小写不敏感
+并将所有图片文件放在一个单独的目录中(不要与词典源文件放在同一目录中). 数据目录中可以
+带有子目录。在使用MdxBuilder制作词库时，将Data路径指向上面存放数据的目录，该目录中的
+所有文件都会被压缩到后缀名为.mdd文件中,使用时该.mdd文件应当与.mdx文件在同一目录下。
+
+在html中嵌入声音的方法:
+使用链接<a href="sound://keyword.spx">keyword</a> 这样的形式，点击该链接的时候可以进行发音
+发音仅支持.wav和.spx格式的音频文件。
+
+内部重定向(内容链接):
+1) 当两个关键字所指向的内容是一样的时候，可以采取重定向的方式来达到"链接"的效果。内部重定向的格式为:
+@@@LINK=关键字
+例如color 和 colour 都指向相同的内容，制作词典时可以正常编写color词条，但对于colour词条，可以写成:
+
+colour
+@@@LINK=color
+</>
+
+当显示colour条目的内容时，程序会自动找到color的内容进行显示，链接是可以多重嵌套的。
+
+2)当重复的内容是数据文件时，同样可以采用内部重定向的方式解决冗余问题，只是改为将链接文件的内容设置为:
+@@@LINK=目标文件名全路径  (注意编码方式必须是UTF-16)
+例如abc.spx和123.spx的内容是一样的时候，123.spx的内容可以设置为:
+@@@LINK=\abc.spx
+
+
+4) MDict的紧凑型html格式(Compat Html)
+这个格式由两个文件组成，正文文件格式基本和2）一样，但在正文里可以使用记号。另外
+一个是记号文件。
+
+记号文件的格式：
+由多个记号定义组成，每个记号定义有3行
+第一行: 记号的名称(只能用数字，必须大于0，最大不超过255)
+第二行: 开始字符串(可以为空)
+第三行: 结束字符串(可以为空)
+使用时在正文里使用`记号`(键盘左上角的那个符号)就会将后续的文字直到下一个记号前的文
+字用记号定义的开始字符串和结束字符串括起来。正文里如果需要显示` 则用"&#96;"表示。内
+码应该和正文的一样(例如正文如果是用Unicode的话，记号文件也应该用Unicode)
+
+例如：
+记号文件：
+1
+<font size=5>
+</font>
+2
+<br>
+
+3
+<font face="Kingsoft Phonetic Plain, Tahoma">
+</font>
+
+
+
+正文文件:
+whole
+`1`whole&#96;s`2`<p>`3`(hol,hJl; houl)
+</>
+
+最后在显示的时候就会被替换成
+<font size=5>whole&#%96;s</font><br><p><font face="Kingsoft Phonetic Plain, Tahoma">(hol,hJl; houl)</font>
+
+
+备注：
+如果你的数据里含有国际音标，建议使用Unicode格式
+（请参考http://www.phon.ucl.ac.uk/home/wells/ipa-unicode.htm）
+将音标用对应的Unicode进行表示。这样只要用户装有支持IPA的字体文件就能够显示音标。
+(Windows里的Lucida Console就包含有IPA对应的字体)
