@@ -1,10 +1,6 @@
 # 提取拟声拟态词，词头可以利用GoldenDic生成并导出
 import os
 
-'''def confu_Tran(Input):
-    print(Input)
-    #print(chr(int(ord(input))-1))'''
-
 # 获取当前工作目录，打开工作目录下的txt文件
 file = os.getcwd() + '\待处理.txt'
 file_for_save = os.getcwd() + "\目标.txt"  #此处是生成的文件的名字和路径

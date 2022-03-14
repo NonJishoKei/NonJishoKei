@@ -25,7 +25,7 @@ with open(file,
             line = line[0:-2] + line[-2].replace("ぐ", 'い' + '\n')
             f2.write(line)
         elif kana == 'す':
-            f2.write(line)  # 就是し
+            f2.write(line)  # し
         elif kana == 'ず':
             f2.write(line)  # 有这样的动词么？
         elif kana == 'つ':
