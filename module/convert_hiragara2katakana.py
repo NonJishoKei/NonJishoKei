@@ -1,8 +1,5 @@
 # 提取拟声拟态词，词头可以利用GoldenDic生成并导出
 
-import os
-
-
 def format_list2str(list_element):
     list_element = str(list_element)
     list_element = list_element.replace(",", "")
