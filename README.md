@@ -26,4 +26,4 @@
 
 版权所有 (c) 2022 NoHeartPen 和其他贡献者。保留所有权利。
 
-使用[MPL 2.0](https://www.mozilla.org/en-US/MPL/2.0/) 许可证 进行许可
+使用[Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.html)进行许可
