@@ -29,4 +29,5 @@ with open(InputFile,
         line_5 = line[0:-2] + line[-2].replace("い", "さ" + '\n')+dichtml
         line_6 = line[0:-2] + line[-2].replace("い", "み" + '\n')+dichtml # 部分形容词
         line_7 = line[0:-2] + line[-2].replace("い", "そ" + '\n')+dichtml # そうだ
-        f2.write(line_1+line_2+line_3+line_4+line_5+line_6+line_7)
+        line_8 = line[0:-2] + line[-2].replace("い", "す" + '\n')+dichtml# すぎる
+        f2.write(line_1+line_2+line_3+line_4+line_5+line_6+line_7+line_8)
