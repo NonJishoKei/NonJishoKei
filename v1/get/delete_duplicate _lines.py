@@ -14,3 +14,4 @@ OutpurFileContext = list (FileContextSet)
 with open(OutpurFile,'w',encoding='UTF-8') as s:
     for i in OutpurFileContext:
         s.writelines(i)
+

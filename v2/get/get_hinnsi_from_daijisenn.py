@@ -15,7 +15,7 @@ with open(InputFile,encoding="UTF-8") as f:
             line = re.sub(regex, replacement, line)
             OutpurFileContext.append(line)
         else:
-            continue
+            print(line)
 
 with open(OutpurFile,'w',encoding='UTF-8') as s:
     for i in OutpurFileContext:
