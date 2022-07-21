@@ -11,26 +11,31 @@ with open(InputFile,
                                             'w',
                                             encoding='utf-8') as f2:
     for line in f:
-        kana = line[-2]
-        line = line.replace('（', '')
-        line = line.replace('）', '')
+        line = line.replace('\n', '')
         dichtml = r'<section class="description"><a href="entry://' + \
-            line.replace('\n', '')+r'#description">' + \
-            line.replace('\n', '')+'</a>\n</section>\n</>'+'\n'
+            line+r'#description">' + \
+            line+'</a>\n</section>\n</>'+'\n'
 
-        line_1 = line[0:-2] + line[-2].replace("る", "ろ" + '\n')+dichtml
-        line_2 = line[0:-2] + line[-2].replace("る", "よ" + '\n')+dichtml
-        line_3 = line[0:-2] + line[-2].replace("る", "な" + '\n')+dichtml
-        line_4 = line[0:-2] + line[-2].replace("る", "ま" + '\n')+dichtml
-        line_5 = line[0:-2] + line[-2].replace("る", "た" + '\n')+dichtml
-        line_6 = line[0:-2] + line[-2].replace("る", "れ" + '\n')+dichtml
-        line_7 = line[0:-2] + line[-2].replace("る", "て" + '\n')+dichtml
-        line_8 = line[0:-2] + line[-2].replace("る", "ら" + '\n')+dichtml
-        line_9 = line[0:-2] + line[-2].replace("る", "さ" + '\n')+dichtml
-        line_10 = line[0:-2] + line[-2].replace("る", "ず" + '\n')+dichtml
-        line_11 = line[0:-2] + line[-2].replace("る", "ぬ" + '\n')+dichtml
-        line_12 = line[0:-2] + line[-2].replace("る", "、" + '\n')+dichtml
-        line_13 = line[0:-2] + '\n'+dichtml # 部分合成词无法通过
-        line_14 = line[0:-2] + line[-2].replace("る", "ん" + '\n')+dichtml
+        line_1 = line[0:-1] + line[-1].replace("る", "ろ" + '\n')+dichtml
+        line_2 = line[0:-1] + line[-1].replace("る", "よ" + '\n')+dichtml
+        line_3 = line[0:-1] + line[-1].replace("る", "な" + '\n')+dichtml  # ながら
+        line_4 = line[0:-1] + line[-1].replace("る", "ま" + '\n')+dichtml  # 敬体
+        line_5 = line[0:-1] + line[-1].replace("る", "た" + '\n')+dichtml  # 简体过去
+        line_6 = line[0:-1] + line[-1].replace("る", "れ" + '\n')+dichtml  # 假定れば
+        line_7 = line[0:-1] + line[-1].replace("る", "て" + '\n')+dichtml  # ている
+        line_8 = line[0:-1] + line[-1].replace("る", "ら" + '\n')+dichtml  # 否定
+        line_9 = line[0:-1] + line[-1].replace("る", "さ" + '\n')+dichtml  # 使役态
+        line_10 = line[0:-1] + \
+            line[-1].replace("る", "ず" + '\n')+dichtml  # 古语否定，现代残留
+        line_11 = line[0:-1] + \
+            line[-1].replace("る", "ぬ" + '\n')+dichtml  # 古语否定，现代残留
+        line_12 = line[0:-1] + line[-1].replace("る", "、" + '\n')+dichtml
+        line_13 = line[0:-1] + '\n'+dichtml  # 部分合成词无法通过
+        line_14 = line[0:-1] + \
+            line[-1].replace("る", "ん" + '\n')+dichtml  # 口语否定
+        line_15 = line[0:-1] + \
+            line[-1].replace("る", "と" + '\n')+dichtml  # 口语ておく
+        line_16 = line[0:-1] + \
+            line[-1].replace("る", "ちゃ" + '\n')+dichtml  # 口语 てしまう
         f2.write(line_1+line_2+line_3+line_4+line_5+line_6 +
-                 line_7+line_8+line_9+line_10+line_11+line_12+line_13+line_14)
+                 line_7+line_8+line_9+line_10+line_11+line_12+line_13+line_14+line_15+line_16)
