@@ -3,8 +3,8 @@ import re
 
 ProessPath = os.getcwd()
 
-InputFile = r'temp.md'
-OutpurFile = r'save.md'
+InputFile = r'temp.txt'
+OutpurFile = r'save.txt'
 
 OutpurFileContext = []
 with open(InputFile,encoding="UTF-8") as f:
