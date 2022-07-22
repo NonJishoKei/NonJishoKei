@@ -36,6 +36,8 @@ with open(InputFile,
         line_15 = line[0:-1] + \
             line[-1].replace("る", "と" + '\n')+dichtml  # 口语ておく
         line_16 = line[0:-1] + \
-            line[-1].replace("る", "ちゃ" + '\n')+dichtml  # 口语 てしまう
+            line[-1].replace("る", "ち" + '\n')+dichtml  # 口语 てしまう
+        line_17 = line[0:-1] + \
+            line[-1].replace("る", "ちゃ" + '\n')+dichtml # 同上，划词
         f2.write(line_1+line_2+line_3+line_4+line_5+line_6 +
-                 line_7+line_8+line_9+line_10+line_11+line_12+line_13+line_14+line_15+line_16)
+                 line_7+line_8+line_9+line_10+line_11+line_12+line_13+line_14+line_15+line_16+line_17)
