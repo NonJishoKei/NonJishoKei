@@ -64,7 +64,7 @@ with open(InputFile,
             line_5 = line[0:-1] + line[-1].replace("ぬ", 'ん' + '\n')+dichtml
             f2.write(line_1+line_2+line_3+line_4+line_5)
         elif kana == 'ふ':
-            print(line)#古语中才会出现
+            print(line) #古语中才会出现
         elif kana == 'ぶ':
             line_1 = line[0:-1] + line[-1].replace("ぶ", 'ば' + '\n')+dichtml
             line_2 = line[0:-1] + line[-1].replace("ぶ", 'び' + '\n')+dichtml
