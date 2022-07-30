@@ -1,9 +1,8 @@
-
-from base64 import encode
-from doctest import OutputChecker
 import os
-from re import S
 
+'''
+注意该方法只会返回返回一个值
+'''
 
 def GetGodannJiSho(InputText):  # 下表还可以再修改
     GodanLastLetter = ["え", "お", "か", "が", "き", "ぎ", "け", "げ", "こ", "ご", "さ", "し", "せ", "そ", "た", "ち",
@@ -22,7 +21,7 @@ def GetGodannJiSho(InputText):  # 下表还可以再修改
         Jisho_Dic = {}
         GodanJishoLastLetter = ['う', 'く', 'す', 'つ', 'ぬ', 'ぶ', 'む', 'る']
         for i in GodanJishoLastLetter:
-            Jisho_Dic[abs(ord(i)-ord(LastLetter))] = i
+            Jisho_Dic[abs(ord(i)-ord(LastLetter))] = i  # 计算输入的假名与词尾原型假名之间的距离
         GodannJiSho = InputText.replace(LastLetter, Jisho_Dic.get(
             min(Jisho_Dic.keys()), '无法判断该五段假名的原型'))
     return GodannJiSho
@@ -33,7 +32,7 @@ def SearchInIndex(InputText):
     if InputText in IndexTextList:
         global SearchResult
         SearchResult = InputText
-        Output.append(SearchResult)
+        Output.add(SearchResult)
         return SearchResult
     else:
         SearchResult = InputText+'无该索引'
@@ -75,35 +74,24 @@ NoNeedProcess = ['ぐ', 'つ', 'ぶ', 'む', 'る']
 
 NeedOnceProcess = ['ご', 'に', 'び', '、', 'し', 'も', 'お', 'ず', 'が', 'せ', 'ぎ', 'べ',
                    'ぐ', 'ぼ', 'げ', 'る', 'よ', 'え', 'き', 'り', 'ば', 'わ', 'め', 'の', 'ね', 'こ']
-
-NeedOnceProcess_itidann = ['、', 'ず', 'よ']
-NeedOnceProcess_godann = ["ご", "に", "び", "し", "も", "お", "が", "せ",
-                          "ぎ", "べ", "ぼ", "げ", "え", "き", "り", "ば", "わ", "め", "の", "ね", "こ"]
-
 NeedTwiceProcess = ["か", "す", "た", "ら", "け", "み", "ろ",
                     "ま", "そ", "ぬ", "れ", "な", "く", "と", "う", "て", "ち"]
-
-NeedTwiceProcess_Jisho = ['す', 'ぬ', 'く', 'う']  # 这几个词尾假名可能是来自：原型
-
-NeedTwiceProcess_adj = ['か', 'け', 'み', 'そ']  # 这几个词尾来源：形容词/一段/五段
-
-NeedTwiceProcess_itidann = ['た', 'ら', 'ろ', 'ま',
-                            'れ', 'な', 'と', 'て', 'ち']  # 这些只可能来自一段/五段
 
 
 ProcessPath = os.getcwd()
 
 
-InputText = '賭さ'
-Output = []  # 保留查询的结果
-SearchInIndex(InputText) 
+InputText = '愚か'
+Output = set() # 保留查询的结果
+
+SearchInIndex(InputText)  # 查看是否是
 LastLetter = InputText.replace('\n', '')[-1]
 print(LastLetter)
 if LastLetter in NoNeedProcess:
     print('不用处理的假名')
     ProcessText = InputText
     if SearchInIndex(ProcessText) == False:
-        Output.append(InputText)
+        Output.add(InputText)
 elif LastLetter in NeedOnceProcess:
     ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'る')
     if SearchInIndex(ProcessText) == False:
@@ -111,7 +99,7 @@ elif LastLetter in NeedOnceProcess:
         if SearchInIndex(ProcessText) == False:
             ProcessText = ProcessText+'る'
             if SearchInIndex(ProcessText) == False:
-                Output.append(InputText)
+                Output.add(InputText)
 elif LastLetter in NeedTwiceProcess:
     print('至少需要处理2次')
     ProcessText = InputText  # 原型
@@ -126,8 +114,9 @@ elif LastLetter in NeedTwiceProcess:
             if SearchInIndex(ProcessText) == False:  # 五段
                 print('不是一段动词尝试在五段动词中查找')
                 ProcessText = GetGodannJiSho(InputText)
+                print('ま'+ProcessText)
                 if SearchInIndex(ProcessText) == False:
-                    Output.append(InputText)
+                    Output.add(InputText)
 elif LastLetter == 'っ':  # る五段/つ/う
     ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'る')
     if SearchInIndex(ProcessText) == False:
@@ -136,9 +125,9 @@ elif LastLetter == 'っ':  # る五段/つ/う
             ProcessText = InputText[0:-1] + \
                 InputText[-1].replace(LastLetter, 'う')
             if InputText == '行っ':
-                Output.append('行く')
+                Output.add('行く')
                 if SearchInIndex(ProcessText) == False:
-                    Output.append(InputText)
+                    Output.add(InputText)
 elif LastLetter == 'さ':
     print('尝试在形容词中进行查找')
     ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'い')
@@ -150,7 +139,7 @@ elif LastLetter == 'さ':
             ProcessText = InputText[0:-1] + \
                 InputText[-1].replace(LastLetter, 'る')
             if SearchInIndex(ProcessText) == False:
-                Output.append(InputText)
+                Output.add(InputText)
 elif LastLetter == 'ん':
     ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'む')
     if SearchInIndex(ProcessText) == False:
@@ -162,7 +151,7 @@ elif LastLetter == 'ん':
                 ProcessText = InputText[0:-1] + \
                     InputText[-1].replace(LastLetter, 'る')
                 if SearchInIndex(ProcessText) == False:
-                    Output.append(InputText)
+                    Output.add(InputText)
 elif LastLetter == "い":
     print('い有可能是形容词的原型，进行尝试性查找')
     ProcessText = InputText
@@ -178,16 +167,16 @@ elif LastLetter == "い":
                 ProcessText = InputText[0:-1] + \
                     InputText[-1].replace(LastLetter, 'ぐ')
                 if SearchInIndex(ProcessText) == False:
-                    Output.append(InputText)
+                    Output.add(InputText)
 elif LastLetter == 'ゃ':
     print('特殊词尾假名，单独处理')
     ProcessText = InputText[0:-2]+InputText[-2:].replace('ちゃ', 'る')
     if SearchInIndex(ProcessText) == False:
         print("找不到"+InputText + "原型")
-        Output.append(InputText)
+        Output.add(InputText)
 else:
     ProcessText = InputText+'る'
     if SearchInIndex(ProcessText) == False:
         print("找不到"+InputText + "原型")
-        Output.append(InputText)
+        Output.add(InputText)
 print(Output)
