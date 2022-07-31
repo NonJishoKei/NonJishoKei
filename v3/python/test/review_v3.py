@@ -9,10 +9,10 @@ with open(r'save.txt', 'r', encoding='utf-8') as f,open(r'review_v3.txt','w',enc
     for i in f.readlines():
         reg = r'^(.*?)\t(.*?)\t(.*?)$'
         line = re.search(reg, i)
-        if line.group(1) != line.group(3):
+        if  line.group(3) not in line.group(1) :
             false += 1
             s.write('Fasle\t'+i)
-        elif line.group(1) == line.group(3):
+        elif  line.group(3) in line.group(1) :
             true += 1
             s.write('True\t'+i)
         else:

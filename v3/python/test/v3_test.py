@@ -1,8 +1,12 @@
 import os
+import time
+
+StartTime = time.perf_counter()
 
 '''
-注意该方法只会返回返回一个值
+注意该方法进行更细致的划分，可以返回更多
 '''
+
 
 def GetGodannJiSho(InputText):  # 下表还可以再修改
     GodanLastLetter = ["え", "お", "か", "が", "き", "ぎ", "け", "げ", "こ", "ご", "さ", "し", "せ", "そ", "た", "ち",
@@ -74,32 +78,49 @@ NoNeedProcess = ['ぐ', 'つ', 'ぶ', 'む', 'る']
 
 NeedOnceProcess = ['ご', 'に', 'び', '、', 'し', 'も', 'お', 'ず', 'が', 'せ', 'ぎ', 'べ',
                    'ぐ', 'ぼ', 'げ', 'る', 'よ', 'え', 'き', 'り', 'ば', 'わ', 'め', 'の', 'ね', 'こ']
+
+NeedOnceProcess_itidann = ['、', 'ず', 'よ']
+NeedOnceProcess_godann = ["ご", "に", "び", "し", "も", "お", "が", "せ",
+                          "ぎ", "べ", "ぼ", "げ", "え", "き", "り", "ば", "わ", "め", "の", "ね", "こ"]
+
 NeedTwiceProcess = ["か", "す", "た", "ら", "け", "み", "ろ",
                     "ま", "そ", "ぬ", "れ", "な", "く", "と", "う", "て", "ち"]
+
+NeedTwiceProcess_Jisho = ['す', 'ぬ', 'く', 'う']  # 这几个词尾假名可能是来自：原型
+
+NeedTwiceProcess_adj = ['か', 'け', 'み', 'そ']  # 这几个词尾来源：形容词/一段/五段
+
+NeedTwiceProcess_itidann = ['た', 'ら', 'ろ', 'ま',
+                            'れ', 'な', 'と', 'て', 'ち']  # 这些只可能来自一段/五段
 
 
 ProcessPath = os.getcwd()
 
 
-InputText = '愚か'
-Output = set() # 保留查询的结果
+InputText = '有り触れた'
+Output = set()  # 保留查询的结果
 
 SearchInIndex(InputText)  # 查看是否是
 LastLetter = InputText.replace('\n', '')[-1]
 print(LastLetter)
+
+ProcessText = InputText+'る' # 一段动词的连用形1
+SearchInIndex(ProcessText)
 if LastLetter in NoNeedProcess:
     print('不用处理的假名')
     ProcessText = InputText
     if SearchInIndex(ProcessText) == False:
         Output.add(InputText)
-elif LastLetter in NeedOnceProcess:
+elif LastLetter in NeedOnceProcess_itidann:
     ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'る')
     if SearchInIndex(ProcessText) == False:
-        ProcessText = ProcessNeedOnceProcess_Godan(InputText)
+        Output.add(InputText)
+elif LastLetter in NeedOnceProcess_godann:
+    ProcessText = ProcessNeedOnceProcess_Godan(InputText)
+    if SearchInIndex(ProcessText) == False:
+        ProcessText = ProcessText+'る'
         if SearchInIndex(ProcessText) == False:
-            ProcessText = ProcessText+'る'
-            if SearchInIndex(ProcessText) == False:
-                Output.add(InputText)
+            Output.add(InputText)
 elif LastLetter in NeedTwiceProcess:
     print('至少需要处理2次')
     ProcessText = InputText  # 原型
@@ -175,8 +196,7 @@ elif LastLetter == 'ゃ':
         print("找不到"+InputText + "原型")
         Output.add(InputText)
 else:
-    ProcessText = InputText+'る'
-    if SearchInIndex(ProcessText) == False:
-        print("找不到"+InputText + "原型")
-        Output.add(InputText)
-print(Output)
+    Output.add(InputText)
+print(str(Output).replace("'", ""))
+EndTime = time.perf_counter()
+print('耗时:%s毫秒' % (round((EndTime - StartTime)*1000, 3)))
