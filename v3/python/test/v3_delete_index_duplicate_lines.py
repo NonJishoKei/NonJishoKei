@@ -1,5 +1,9 @@
 import os
 
+'''
+删除不是以假名结尾的词条
+'''
+
 ProcessPath = os.getcwd()
 
 with open(r'temp.txt', 'r', encoding='utf-8') as f, open(r'save.txt', 'w', encoding='utf-8')as s:

@@ -36,7 +36,7 @@ def SearchInIndex(InputText):
     if InputText in IndexTextList:
         global SearchResult
         SearchResult = InputText
-        Output.add(SearchResult)
+        Output.append(SearchResult)
         return SearchResult
     else:
         SearchResult = InputText+'无该索引'
@@ -66,7 +66,7 @@ def ProcessNeedOnceProcess_Godan(InputText):
     return ProcessResult
 
 
-IndexTextDic = {}
+
 IndexTextList = []
 with open('v3_index.txt', 'r', encoding='utf-8') as f:
     IndexText = f.readlines()
@@ -103,7 +103,7 @@ with open('temp.txt', 'r', encoding='utf-8') as f, open('save.txt', 'w', encodin
         reg = r'^(.*?)\t'
         NonJishoText = re.search(reg, line.replace('\n', ''))
         InputText = NonJishoText.group().replace('\t', '')
-        Output = set()
+        Output = []
         SearchInIndex(InputText)  # 查看是否收录在词典中
         LastLetter = InputText.replace('\n', '')[-1]
 
@@ -148,9 +148,9 @@ with open('temp.txt', 'r', encoding='utf-8') as f, open('save.txt', 'w', encodin
                 InputText[-1].replace(LastLetter, 'う')
             SearchInIndex(ProcessText)
             if InputText == '行っ':
-                Output.add('行く')
+                Output.append('行く')
                 SearchInIndex(ProcessText)
-                Output.add(InputText)
+                Output.append(InputText)
         elif LastLetter == 'さ':
             
             ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'い')
@@ -186,8 +186,8 @@ with open('temp.txt', 'r', encoding='utf-8') as f, open('save.txt', 'w', encodin
             ProcessText = InputText[0:-2]+InputText[-2:].replace('ちゃ', 'る')
             SearchInIndex(ProcessText)
         else:
-            Output.add(InputText)
-
+            Output.append(InputText)
+        Output.append(InputText)
         s.write(str(Output).replace("'","")+'\t'+line)
         i += 1
         print(str(i/Len))
