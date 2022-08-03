@@ -1,3 +1,4 @@
+from ast import In
 import os
 import time
 
@@ -97,12 +98,11 @@ NeedTwiceProcess_itidann = ['た', 'ら', 'ろ', 'ま',
 ProcessPath = os.getcwd()
 
 
-InputText = '有り触れた'
+InputText = 'エロみ'
 Output = set()  # 保留查询的结果
 
-SearchInIndex(InputText)  # 查看是否是
+SearchInIndex(InputText)  # 查看是否收录在词典中
 LastLetter = InputText.replace('\n', '')[-1]
-print(LastLetter)
 
 ProcessText = InputText+'る' # 一段动词的连用形1
 SearchInIndex(ProcessText)
@@ -111,6 +111,12 @@ if LastLetter in NoNeedProcess:
     ProcessText = InputText
     if SearchInIndex(ProcessText) == False:
         Output.add(InputText)
+elif LastLetter in NeedTwiceProcess_Jisho :
+    ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'い')
+    if SearchInIndex(ProcessText) == False:
+        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'る')
+        if SearchInIndex(ProcessText) == False:
+            Output.add(InputText)
 elif LastLetter in NeedOnceProcess_itidann:
     ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'る')
     if SearchInIndex(ProcessText) == False:

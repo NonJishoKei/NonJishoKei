@@ -1,4 +1,6 @@
-from calendar import prcal
+'''
+分析v3_index.txt中的收录单词的词尾假名的规律
+'''
 import os
 
 ProcessPath = os.chdir('..\\')
@@ -11,8 +13,6 @@ with open(ProcessFile,'r',encoding='utf-8') as f,open('v3_index_analsis.txt','w'
         line = line.replace('\n','')
         LastLetter = line[-1]
         LastLetters[LastLetter] = LastLetters.get(LastLetter,1)+1
-    #print(list(LastLetters)) # 字典会直接转成只含键名的列表
-    #print(type(LastLetters.items()))# <class 'dict_items'>
     for i in LastLetters.items():
         OutputLine = str(i).replace(')','\n')
         OutputLine = OutputLine.replace("',",'\t')

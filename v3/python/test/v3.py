@@ -2,6 +2,9 @@ import os
 import re
 import time
 
+'''
+理论上只会返回1个结果
+'''
 StartTime = time.perf_counter()
 
 def GetGodannJiSho(InputText):  # 下表还可以再修改
