@@ -14,13 +14,29 @@
 
 # [tools](tools)
 
-制作过程中可能会用到的工具。
+参与该项目过程中可能会用到的工具。
 
 如果你遇到问题，欢迎与我交流，我的邮箱是NoHeartPen@outlook.com
 
 # 鸣谢
 
 感谢Y老师、网友amob、网友cinnamon、网友满星MAX等，Ta们对这个项目起到了至关重要的作用:)
+
+# 支持项目
+
+作为一个个人项目，感谢大家一路以来的支持！如果愿意帮助维持这个项目继续推进可以：
+
+- 让更多开发者发现这个项目：在[Github主页](https://github.com/NoHeartPen/JapaneseConjugation)，点击右上角的`★Star`按钮收藏本项目、向日语词典软件的开发者推荐这套解决方法；
+- 为项目修改错别字用词、提出建议、也可以直接提交代码；
+- 打赏作者请他喝瓶AD钙；
+
+注意：本项目完全开源、免费，请确认是出于心情愉悦自愿对作者个人的赠与支持，而非购买行为。本人不承诺、不提供任何针对该赠与的回报性质服务，感谢理解:)
+
+微信：
+![|500](https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//62ecae86702c5dcb9c2eb4ab.png)
+
+支付宝：
+![|500](https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//62ecaedf702c5dcb9c2eb4be.jpg)
 
 # 版权
 
