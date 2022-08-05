@@ -33,10 +33,11 @@
 注意：本项目完全开源、免费，请确认是出于心情愉悦自愿对作者个人的赠与支持，而非购买行为。本人不承诺、不提供任何针对该赠与的回报性质服务，感谢理解:)
 
 微信：
-![|500](https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//62ecae86702c5dcb9c2eb4ab.png)
 
+<img src="https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//202208051503.png" width="250" />
 支付宝：
-![|500](https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//62ecaedf702c5dcb9c2eb4be.jpg)
+
+<img src="https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//62ecaedf702c5dcb9c2eb4be.jpg" width="250" />
 
 # 版权
 
