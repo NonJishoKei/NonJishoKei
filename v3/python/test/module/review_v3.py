@@ -1,7 +1,7 @@
 import os
 import re
 
-ProcessPath = os.getcwd()
+ProcessPath = os.chdir('..')
 true = 0
 false = 0
 lineresult = ''

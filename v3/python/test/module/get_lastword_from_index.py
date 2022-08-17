@@ -1,9 +1,9 @@
 '''
-分析所有单词词尾单词的词尾假名的规律
+分析索引文件中所有单词词尾假名的规律
 '''
 import os
 
-ProcessPath = os.chdir('..\\')
+ProcessPath = os.chdir('..')
 ProcessPath = os.getcwd()
 ProcessFile = r'v3_index.txt'
 LastLetters = {}
