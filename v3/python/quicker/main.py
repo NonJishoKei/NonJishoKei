@@ -70,12 +70,11 @@ def ProcessNeedOnceProcess_Godan(InputText):
     return ProcessResult
 
 
-NoNeedProcess = 'ぐつぶむる'
 
-NeedOnceProcess = 'ごにび、しもおずがせぎべぐぼげるよえきりばわめのねこ'
 
-NeedOnceProcess_itidann = '、ずよ'
-NeedOnceProcess_godann = 'ごにびしもおがせぎべぼげえきりばわめのねこ'
+NeedOnceProcess_itidann = '、ずよぬ'
+NeedOnceProcess_godann = 'わえおがきぎげこごしせにねのばびべぼめもり'
+NeedOnceProcess_adj = 'くうす'
 
 NeedTwiceProcess = 'かすたらけみろまそぬれなくとうてち'
 
@@ -98,11 +97,7 @@ def ConvertConjugate(InputText):
 
     ProcessText = InputText+'る'  # 一段动词的连用形1
     SearchInIndex(ProcessText)
-    if LastLetter in NoNeedProcess:
-        print('不用处理的假名')
-        ProcessText = InputText
-        SearchInIndex(ProcessText)
-    elif LastLetter in NeedTwiceProcess_Jisho:
+    if LastLetter in NeedTwiceProcess_Jisho:
         ProcessText = InputText[0:-1] + 'い'
         SearchInIndex(ProcessText)
         ProcessText = InputText[0:-1] + 'る'
@@ -110,12 +105,11 @@ def ConvertConjugate(InputText):
     elif LastLetter in NeedOnceProcess_itidann:
         ProcessText = InputText[0:-1]+'る'
         SearchInIndex(ProcessText)
-        ProcessText = ProcessNeedOnceProcess_Godan(InputText)
-        SearchInIndex(ProcessText)
     elif LastLetter in NeedOnceProcess_godann:
         ProcessText = ProcessNeedOnceProcess_Godan(InputText)
         SearchInIndex(ProcessText)
-        ProcessText = ProcessText+'る'
+    elif LastLetter in NeedOnceProcess_adj:
+        ProcessText = InputText[0:1]+'い'
         SearchInIndex(ProcessText)
     elif LastLetter in NeedTwiceProcess:
         ProcessText = InputText  # 原型
