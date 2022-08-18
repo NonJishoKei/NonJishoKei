@@ -51,21 +51,21 @@ def SearchInIndex(SearchText):
 
 def ProcessNeedOnceProcess_Godan(InputText):
     if LastLetter in 'わえお':
-        ProcessResult = InputText[0:-1]+InputText[-1].replace(LastLetter, 'う')
+        ProcessResult = InputText[0:-1]+'う'
     elif LastLetter in 'かきけこ':
-        ProcessResult = InputText[0:-1]+InputText[-1].replace(LastLetter, 'く')
+        ProcessResult = InputText[0:-1]+'く'
     elif LastLetter in 'がぎげご':
-        ProcessResult = InputText[0:-1]+InputText[-1].replace(LastLetter, 'ぐ')
+        ProcessResult = InputText[0:-1]+'ぐ'
     elif LastLetter in 'しせ':
-        ProcessResult = InputText[0:-1]+InputText[-1].replace(LastLetter, 'す')
+        ProcessResult = InputText[0:-1]+'す'
     elif LastLetter in 'にねの':
-        ProcessResult = InputText[0:-1]+InputText[-1].replace(LastLetter, 'ぬ')
+        ProcessResult = InputText[0:-1]+'ぬ'
     elif LastLetter in 'ばびべぼ':
-        ProcessResult = InputText[0:-1]+InputText[-1].replace(LastLetter, 'ぶ')
+        ProcessResult = InputText[0:-1]+'ぶ'
     elif LastLetter in 'めも':
-        ProcessResult = InputText[0:-1]+InputText[-1].replace(LastLetter, 'む')
+        ProcessResult = InputText[0:-1] + 'む'
     elif LastLetter in 'り':
-        ProcessResult = InputText[0:-1]+InputText[-1].replace(LastLetter, 'る')
+        ProcessResult = InputText[0:-1] + 'る'
     else:
         ProcessResult = InputText
         print(ProcessResult+"ProcessNeedOnceProcess_Godan异常")
@@ -105,12 +105,12 @@ def ConvertConjugate(InputText):
         ProcessText = InputText
         SearchInIndex(ProcessText)
     elif LastLetter in NeedTwiceProcess_Jisho:
-        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'い')
+        ProcessText = InputText[0:-1]+'い'
         SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'る')
+        ProcessText = InputText[0:-1] + 'る'
         SearchInIndex(ProcessText)
     elif LastLetter in NeedOnceProcess_itidann:
-        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'る')
+        ProcessText = InputText[0:-1]+'る'
         SearchInIndex(ProcessText)
         ProcessText = ProcessNeedOnceProcess_Godan(InputText)
         SearchInIndex(ProcessText)
@@ -122,58 +122,51 @@ def ConvertConjugate(InputText):
     elif LastLetter in NeedTwiceProcess:
         ProcessText = InputText  # 原型
         SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + \
-            InputText[-1].replace(LastLetter, 'い')  # 形容词
+        ProcessText = InputText[0:-1] + 'い'  # 形容词
         SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + \
-            InputText[-1].replace(LastLetter, 'る')
+        ProcessText = InputText[0:-1] + 'る'
         SearchInIndex(ProcessText)
         ProcessText = GetGodannJiSho(InputText)
         SearchInIndex(ProcessText)
     elif LastLetter == 'っ':  # る五段/つ/う
-        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'る')
+        ProcessText = InputText[0:-1] + 'る'
         SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'つ')
+        ProcessText = InputText[0:-1]+'つ'
         SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + \
-            InputText[-1].replace(LastLetter, 'う')
+        ProcessText = InputText[0:-1] + 'う'
         SearchInIndex(ProcessText)
         if InputText == '行っ':
             Output.append('行く')
             SearchInIndex(ProcessText)
             Output.append(InputText)
     elif LastLetter == 'さ':
-        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'い')
+        ProcessText = InputText[0:-1]+'い'
         SearchInIndex(ProcessText)
 
-        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'す')
+        ProcessText = InputText[0:-1]+'す'
         SearchInIndex(ProcessText)
 
         ProcessText = InputText[0:-1] + \
             InputText[-1].replace(LastLetter, 'る')
         SearchInIndex(ProcessText)
     elif LastLetter == 'ん':
-        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'む')
+        ProcessText = InputText[0:-1]+'む'
         SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'ぶ')
+        ProcessText = InputText[0:-1]+'ぶ'
         SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + \
-            InputText[-1].replace(LastLetter, 'ぬ')
+        ProcessText = InputText[0:-1] + 'ぬ'
         SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + \
-            InputText[-1].replace(LastLetter, 'る')
+        ProcessText = InputText[0:-1] + 'る'
         SearchInIndex(ProcessText)
     elif LastLetter == "い":
-        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'う')
+        ProcessText = InputText[0:-1] + 'う'
         SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + \
-            InputText[-1].replace(LastLetter, 'く')
+        ProcessText = InputText[0:-1] + 'く'
         SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + \
-            InputText[-1].replace(LastLetter, 'ぐ')
+        ProcessText = InputText[0:-1] + 'ぐ'
         SearchInIndex(ProcessText)
     elif LastLetter == 'ゃ':
-        ProcessText = InputText[0:-2]+InputText[-2:].replace('ちゃ', 'る')
+        ProcessText = InputText[0:-2] + 'る'
         SearchInIndex(ProcessText)
     else:
         print("词尾假名出现例外情况！"+InputText)
