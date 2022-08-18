@@ -47,7 +47,7 @@ def SearchInIndex(SearchText):
         return False
 
 
-def ProcessNeedOnceProcess_Godan(InputText): # 请确保是五段动词活用可能出现的词尾再调用该函数
+def ProcessNeedOnceProcess_Godan(InputText):  # 请确保是五段动词活用可能出现的词尾再调用该函数
     if LastLetter in 'わえお':
         ProcessResult = InputText[0:-1]+'う'
     elif LastLetter in 'かきけこ':
@@ -70,12 +70,9 @@ def ProcessNeedOnceProcess_Godan(InputText): # 请确保是五段动词活用可
     return ProcessResult
 
 
-
-
 NeedOnceProcess_itidann = '、ずよぬ'
 NeedOnceProcess_godann = 'わえおがきぎげこごしせにねのばびべぼめもり'
 NeedOnceProcess_adj = 'くうす'
-
 
 
 NeedTwiceProcess_adj_godann = 'かけみそ'  # 这几个词尾来源：形容词/五段
@@ -118,7 +115,7 @@ def ConvertConjugate(InputText):
         SearchInIndex(ProcessText)
         ProcessText = GetGodannJiSho(InputText)
         SearchInIndex(ProcessText)
-    elif LastLetter == 'っ':  
+    elif LastLetter == 'っ':
         print('词尾假名是：'+LastLetter+'有可能是五段动词')
         ProcessText = InputText[0:-1] + 'る'
         SearchInIndex(ProcessText)
@@ -179,7 +176,16 @@ def ConvertConjugate(InputText):
     return CLipboradTexts
 
 
+def DelWordRuby(ProcessText):
+    reg = r'\([\u3040-\u309f]*?\)'  # 参考Unicode码值，只匹配平假名
+    replacement = r''
+    OutputText = re.sub(reg, replacement, ProcessText)
+    return OutputText
+
+
 InputText = pyperclip.paste()
+if '(' in InputText:
+    InputText = DelWordRuby(InputText)
 OutputText = ConvertConjugate(InputText)
 pyperclip.copy(OutputText)
 print(OutputText)

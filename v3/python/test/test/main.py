@@ -49,7 +49,7 @@ def SearchInIndex(SearchText):
         return False
 
 
-def ProcessNeedOnceProcess_Godan(InputText): # 请确保是五段动词活用可能出现的词尾再调用该函数
+def ProcessNeedOnceProcess_Godan(InputText):  # 请确保是五段动词活用可能出现的词尾再调用该函数
     if LastLetter in 'わえお':
         ProcessResult = InputText[0:-1]+'う'
     elif LastLetter in 'かきけこ':
@@ -72,12 +72,9 @@ def ProcessNeedOnceProcess_Godan(InputText): # 请确保是五段动词活用可
     return ProcessResult
 
 
-
-
 NeedOnceProcess_itidann = '、ずよぬ'
 NeedOnceProcess_godann = 'わえおがきぎげこごしせにねのばびべぼめもり'
 NeedOnceProcess_adj = 'くうす'
-
 
 
 NeedTwiceProcess_adj_godann = 'かけみそ'  # 这几个词尾来源：形容词/五段
@@ -171,6 +168,13 @@ def ConvertConjugate(InputText):
     return CLipboradTexts
 
 
+def DelWordRuby(ProcessText):
+    reg = r'\([\u3040-\u309f]*?\)'  # 参考Unicode码值，只匹配平假名
+    replacement = r''
+    OutputText = re.sub(reg, replacement, ProcessText)
+    return OutputText
+
+
 with open('temp.txt', 'r', encoding='utf-8') as f, open('save.txt', 'w', encoding='utf-8')as s:
     FileContextList = f.readlines()
     i = 0
@@ -179,6 +183,8 @@ with open('temp.txt', 'r', encoding='utf-8') as f, open('save.txt', 'w', encodin
         reg = r'^(.*?)\t'
         NonJishoText = re.search(reg, line.replace('\n', ''))
         InputText = NonJishoText.group().replace('\t', '')
+        if '(' in InputText:
+            InputText = DelWordRuby(InputText)
         Output = []
         ConvertConjugate(InputText)
         s.write(str(Output).replace("'", "")+'\t'+line)
