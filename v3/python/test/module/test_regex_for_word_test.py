@@ -8,7 +8,7 @@
 import re
 
 
-InputText = '食(た)べる'
+InputText = '食(た)べた'
 
 def DelRuby(ProcessText):
     reg = r'\((.*?)\)'

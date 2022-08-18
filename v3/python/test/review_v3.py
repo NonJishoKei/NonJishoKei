@@ -1,7 +1,10 @@
 import os
 import re
 
-ProcessPath = os.chdir('..')
+'''
+请注意，该脚本只能由main.py从目录下调用，单独使用注意检查文件路径
+'''
+
 true = 0
 false = 0
 lineresult = ''

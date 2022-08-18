@@ -3,10 +3,11 @@ import re
 import time
 
 '''
-返回全部的查找结果
+返回所有查询结果
 '''
 
 StartTime = time.perf_counter()
+
 
 def GetGodannJiSho(InputText):  # 下表还可以再修改
     GodanLastLetter = ["え", "お", "か", "が", "き", "ぎ", "け", "げ", "こ", "ご", "さ", "し", "せ", "そ", "た", "ち",
@@ -14,28 +15,35 @@ def GetGodannJiSho(InputText):  # 下表还可以再修改
     if LastLetter not in GodanLastLetter:
         print("非五段动词变形！")
     if LastLetter in ["が", "ぎ", "げ", "ご"]:
-        GodannJiSho = InputText[0:-1]+InputText[-1].replace(LastLetter, "ぐ")
+        GodannJiSho = InputText[0:-1] + "ぐ"
     elif LastLetter == "と":
-        GodannJiSho = InputText[0:-1]+InputText[-1].replace(LastLetter, "つ")
+        GodannJiSho = InputText[0:-1]+"つ"
     elif LastLetter == "ば":
-        GodannJiSho = InputText[0:-1]+InputText[-1].replace(LastLetter, "ぶ")
+        GodannJiSho = InputText[0:-1]+"ぶ"
     elif LastLetter == "わ":
-        GodannJiSho = InputText[0:-1]+InputText[-1].replace(LastLetter, "う")
+        GodannJiSho = InputText[0:-1] + "う"
     else:
         Jisho_Dic = {}
         GodanJishoLastLetter = ['う', 'く', 'す', 'つ', 'ぬ', 'ぶ', 'む', 'る']
         for i in GodanJishoLastLetter:
             Jisho_Dic[abs(ord(i)-ord(LastLetter))] = i  # 计算输入的假名与词尾原型假名之间的距离
-        GodannJiSho = InputText[0:-1]+InputText[-1].replace(LastLetter, Jisho_Dic.get(
-            min(Jisho_Dic.keys()), '无法判断该五段假名的原型'))
+        GodannJiSho = InputText[0:-1] + \
+            Jisho_Dic.get(min(Jisho_Dic.keys()), '无法判断该五段假名的原型')
     return GodannJiSho
 
 
-def SearchInIndex(InputText):
-    print('尝试在索引中查找'+InputText)
-    if InputText in IndexTextList:
+IndexTextList = []
+with open('v3_index.txt', 'r', encoding='utf-8') as f:
+    IndexText = f.readlines()
+    for i in IndexText:
+        IndexTextList.append(i.replace('\n', ''))
+
+
+def SearchInIndex(SearchText):
+    print('尝试在索引中查找'+SearchText)
+    if SearchText in IndexTextList:
         global SearchResult
-        SearchResult = InputText
+        SearchResult = SearchText
         Output.append(SearchResult)
         return SearchResult
     else:
@@ -66,14 +74,6 @@ def ProcessNeedOnceProcess_Godan(InputText):
     return ProcessResult
 
 
-
-IndexTextList = []
-with open('v3_index.txt', 'r', encoding='utf-8') as f:
-    IndexText = f.readlines()
-    for i in IndexText:
-        IndexTextList.append(i.replace('\n', ''))
-
-
 NoNeedProcess = ['ぐ', 'つ', 'ぶ', 'む', 'る']
 
 NeedOnceProcess = ['ご', 'に', 'び', '、', 'し', 'も', 'お', 'ず', 'が', 'せ', 'ぎ', 'べ',
@@ -93,7 +93,109 @@ NeedTwiceProcess_adj = ['か', 'け', 'み', 'そ']  # 这几个词尾来源：�
 NeedTwiceProcess_itidann = ['た', 'ら', 'ろ', 'ま',
                             'れ', 'な', 'と', 'て', 'ち']  # 这些只可能来自一段/五段
 
+
 ProcessPath = os.getcwd()
+
+
+def ConvertConjugate(InputText):
+    global Output, LastLetter
+    Output = []  # 保留查询的结果
+
+    SearchInIndex(InputText)  # 查看是否收录在词典中
+    LastLetter = InputText.replace('\n', '')[-1]
+
+    ProcessText = InputText+'る'  # 一段动词的连用形1
+    SearchInIndex(ProcessText)
+    if LastLetter in NoNeedProcess:
+        print('不用处理的假名')
+        ProcessText = InputText
+        SearchInIndex(ProcessText)
+    elif LastLetter in NeedTwiceProcess_Jisho:
+        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'い')
+        SearchInIndex(ProcessText)
+        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'る')
+        SearchInIndex(ProcessText)
+    elif LastLetter in NeedOnceProcess_itidann:
+        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'る')
+        SearchInIndex(ProcessText)
+        ProcessText = ProcessNeedOnceProcess_Godan(InputText)
+        SearchInIndex(ProcessText)
+    elif LastLetter in NeedOnceProcess_godann:
+        ProcessText = ProcessNeedOnceProcess_Godan(InputText)
+        SearchInIndex(ProcessText)
+        ProcessText = ProcessText+'る'
+        SearchInIndex(ProcessText)
+    elif LastLetter in NeedTwiceProcess:
+        ProcessText = InputText  # 原型
+        SearchInIndex(ProcessText)
+        ProcessText = InputText[0:-1] + \
+            InputText[-1].replace(LastLetter, 'い')  # 形容词
+        SearchInIndex(ProcessText)
+        ProcessText = InputText[0:-1] + \
+            InputText[-1].replace(LastLetter, 'る')
+        SearchInIndex(ProcessText)
+        ProcessText = GetGodannJiSho(InputText)
+        SearchInIndex(ProcessText)
+    elif LastLetter == 'っ':  # る五段/つ/う
+        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'る')
+        SearchInIndex(ProcessText)
+        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'つ')
+        SearchInIndex(ProcessText)
+        ProcessText = InputText[0:-1] + \
+            InputText[-1].replace(LastLetter, 'う')
+        SearchInIndex(ProcessText)
+        if InputText == '行っ':
+            Output.append('行く')
+            SearchInIndex(ProcessText)
+            Output.append(InputText)
+    elif LastLetter == 'さ':
+        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'い')
+        SearchInIndex(ProcessText)
+
+        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'す')
+        SearchInIndex(ProcessText)
+
+        ProcessText = InputText[0:-1] + \
+            InputText[-1].replace(LastLetter, 'る')
+        SearchInIndex(ProcessText)
+    elif LastLetter == 'ん':
+        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'む')
+        SearchInIndex(ProcessText)
+        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'ぶ')
+        SearchInIndex(ProcessText)
+        ProcessText = InputText[0:-1] + \
+            InputText[-1].replace(LastLetter, 'ぬ')
+        SearchInIndex(ProcessText)
+        ProcessText = InputText[0:-1] + \
+            InputText[-1].replace(LastLetter, 'る')
+        SearchInIndex(ProcessText)
+    elif LastLetter == "い":
+        ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'う')
+        SearchInIndex(ProcessText)
+        ProcessText = InputText[0:-1] + \
+            InputText[-1].replace(LastLetter, 'く')
+        SearchInIndex(ProcessText)
+        ProcessText = InputText[0:-1] + \
+            InputText[-1].replace(LastLetter, 'ぐ')
+        SearchInIndex(ProcessText)
+    elif LastLetter == 'ゃ':
+        ProcessText = InputText[0:-2]+InputText[-2:].replace('ちゃ', 'る')
+        SearchInIndex(ProcessText)
+    else:
+        print("词尾假名出现例外情况！"+InputText)
+        Output.append(InputText)
+    Output.append(InputText)  # 任何情况下都返回复制的值，便于手动修改
+
+    # 删除其中的重复值，只保留第一次的结果
+    ProcessOutput = []
+    for item in Output:
+        if item not in ProcessOutput:
+            ProcessOutput.append(item)
+
+    # 注意，直接使用join遇到数字时会报错，但通过剪贴板获取的数字会被转为字符串
+    CLipboradTexts = '\n'.join(ProcessOutput)
+    return CLipboradTexts
+
 
 with open('temp.txt', 'r', encoding='utf-8') as f, open('save.txt', 'w', encoding='utf-8')as s:
     FileContextList = f.readlines()
@@ -104,93 +206,10 @@ with open('temp.txt', 'r', encoding='utf-8') as f, open('save.txt', 'w', encodin
         NonJishoText = re.search(reg, line.replace('\n', ''))
         InputText = NonJishoText.group().replace('\t', '')
         Output = []
-        SearchInIndex(InputText)  # 查看是否收录在词典中
-        LastLetter = InputText.replace('\n', '')[-1]
-
-        ProcessText = InputText+'る'  # 一段动词的连用形1
-        SearchInIndex(ProcessText)
-        if LastLetter in NoNeedProcess:
-            print('不用处理的假名')
-            ProcessText = InputText
-            SearchInIndex(ProcessText)
-        elif LastLetter in NeedTwiceProcess_Jisho:
-            ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'い')
-            SearchInIndex(ProcessText)
-            ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'る')
-            SearchInIndex(ProcessText)
-        elif LastLetter in NeedOnceProcess_itidann:
-            ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'る')
-            SearchInIndex(ProcessText)
-            ProcessText = ProcessNeedOnceProcess_Godan(InputText)
-            SearchInIndex(ProcessText)
-        elif LastLetter in NeedOnceProcess_godann:
-            ProcessText = ProcessNeedOnceProcess_Godan(InputText)
-            SearchInIndex(ProcessText)
-            ProcessText = ProcessText+'る'
-            SearchInIndex(ProcessText)
-        elif LastLetter in NeedTwiceProcess:
-            ProcessText = InputText  # 原型
-            SearchInIndex(ProcessText) 
-            ProcessText = InputText[0:-1] + \
-                InputText[-1].replace(LastLetter, 'い')  # 形容词
-            SearchInIndex(ProcessText)
-            ProcessText = InputText[0:-1] + \
-                InputText[-1].replace(LastLetter, 'る')
-            SearchInIndex(ProcessText) 
-            ProcessText = GetGodannJiSho(InputText)
-            SearchInIndex(ProcessText)
-        elif LastLetter == 'っ':  # る五段/つ/う
-            ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'る')
-            SearchInIndex(ProcessText)
-            ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'つ')
-            SearchInIndex(ProcessText)
-            ProcessText = InputText[0:-1] + \
-                InputText[-1].replace(LastLetter, 'う')
-            SearchInIndex(ProcessText)
-            if InputText == '行っ':
-                Output.append('行く')
-                SearchInIndex(ProcessText)
-                Output.append(InputText)
-        elif LastLetter == 'さ':
-            
-            ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'い')
-            SearchInIndex(ProcessText)
-            
-            ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'す')
-            SearchInIndex(ProcessText)
-            
-            ProcessText = InputText[0:-1] + \
-                InputText[-1].replace(LastLetter, 'る')
-            SearchInIndex(ProcessText)
-        elif LastLetter == 'ん':
-            ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'む')
-            SearchInIndex(ProcessText)
-            ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'ぶ')
-            SearchInIndex(ProcessText)
-            ProcessText = InputText[0:-1] + \
-                InputText[-1].replace(LastLetter, 'ぬ')
-            SearchInIndex(ProcessText)
-            ProcessText = InputText[0:-1] + \
-                InputText[-1].replace(LastLetter, 'る')
-            SearchInIndex(ProcessText)
-        elif LastLetter == "い":
-            ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'う')
-            SearchInIndex(ProcessText)
-            ProcessText = InputText[0:-1] + \
-                InputText[-1].replace(LastLetter, 'く')
-            SearchInIndex(ProcessText)
-            ProcessText = InputText[0:-1] + \
-                InputText[-1].replace(LastLetter, 'ぐ')
-            SearchInIndex(ProcessText)
-        elif LastLetter == 'ゃ':
-            ProcessText = InputText[0:-2]+InputText[-2:].replace('ちゃ', 'る')
-            SearchInIndex(ProcessText)
-        else:
-            Output.append(InputText)
-        Output.append(InputText)
-        s.write(str(Output).replace("'","")+'\t'+line)
+        ConvertConjugate(InputText)
+        s.write(str(Output).replace("'", "")+'\t'+line)
         i += 1
         print(str(i/Len))
-os.system('review_v3.py')
+os.system('python review_v3.py')
 EndTime = time.perf_counter()
 print('耗时:%s毫秒' % (round((EndTime - StartTime)*1000, 3)))

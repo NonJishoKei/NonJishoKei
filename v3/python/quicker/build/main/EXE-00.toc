@@ -42,8 +42,8 @@
   ('main',
    'D:\\Document\\03Code\\02Python\\02Dic\\v3\\python\\quicker\\main.py',
    'PYSOURCE'),
-  ('VCRUNTIME140.dll', 'D:\\03Program\\Python\\VCRUNTIME140.dll', 'BINARY'),
   ('python310.dll', 'D:\\03Program\\Python\\python310.dll', 'BINARY'),
+  ('VCRUNTIME140.dll', 'D:\\03Program\\Python\\VCRUNTIME140.dll', 'BINARY'),
   ('select', 'D:\\03Program\\Python\\DLLs\\select.pyd', 'EXTENSION'),
   ('_decimal', 'D:\\03Program\\Python\\DLLs\\_decimal.pyd', 'EXTENSION'),
   ('_hashlib', 'D:\\03Program\\Python\\DLLs\\_hashlib.pyd', 'EXTENSION'),
@@ -62,7 +62,7 @@
  [],
  False,
  False,
- 1659507185,
+ 1660791863,
  [('runw.exe',
    'D:\\03Program\\Python\\lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit\\runw.exe',
    'EXECUTABLE')])

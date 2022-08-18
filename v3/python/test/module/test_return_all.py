@@ -1,12 +1,10 @@
-from ast import In
 import os
 import time
-
-StartTime = time.perf_counter()
 
 '''
 返回所有查询结果
 '''
+StartTime = time.perf_counter()
 
 
 def GetGodannJiSho(InputText):  # 下表还可以再修改
@@ -15,21 +13,28 @@ def GetGodannJiSho(InputText):  # 下表还可以再修改
     if LastLetter not in GodanLastLetter:
         print("非五段动词变形！")
     if LastLetter in ["が", "ぎ", "げ", "ご"]:
-        GodannJiSho = InputText.replace(LastLetter, "ぐ")
+        GodannJiSho = InputText[0:-1] + "ぐ"
     elif LastLetter == "と":
-        GodannJiSho = InputText.replace(LastLetter, "つ")
+        GodannJiSho = InputText[0:-1]+"つ"
     elif LastLetter == "ば":
-        GodannJiSho = InputText.replace(LastLetter, "ぶ")
+        GodannJiSho = InputText[0:-1]+"ぶ"
     elif LastLetter == "わ":
-        GodannJiSho = InputText.replace(LastLetter, "う")
+        GodannJiSho = InputText[0:-1] + "う"
     else:
         Jisho_Dic = {}
         GodanJishoLastLetter = ['う', 'く', 'す', 'つ', 'ぬ', 'ぶ', 'む', 'る']
         for i in GodanJishoLastLetter:
             Jisho_Dic[abs(ord(i)-ord(LastLetter))] = i  # 计算输入的假名与词尾原型假名之间的距离
-        GodannJiSho = InputText.replace(LastLetter, Jisho_Dic.get(
-            min(Jisho_Dic.keys()), '无法判断该五段假名的原型'))
+        GodannJiSho = InputText[0:-1] + \
+            Jisho_Dic.get(min(Jisho_Dic.keys()), '无法判断该五段假名的原型')
     return GodannJiSho
+
+
+IndexTextList = []
+with open('v3_index.txt', 'r', encoding='utf-8') as f:
+    IndexText = f.readlines()
+    for i in IndexText:
+        IndexTextList.append(i.replace('\n', ''))
 
 
 def SearchInIndex(SearchText):
@@ -67,13 +72,6 @@ def ProcessNeedOnceProcess_Godan(InputText):
     return ProcessResult
 
 
-IndexTextList = []
-with open('v3_index.txt', 'r', encoding='utf-8') as f:
-    IndexText = f.readlines()
-    for i in IndexText:
-        IndexTextList.append(i.replace('\n', ''))
-
-
 NoNeedProcess = ['ぐ', 'つ', 'ぶ', 'む', 'る']
 
 NeedOnceProcess = ['ご', 'に', 'び', '、', 'し', 'も', 'お', 'ず', 'が', 'せ', 'ぎ', 'べ',
@@ -98,7 +96,7 @@ ProcessPath = os.getcwd()
 
 
 def ConvertConjugate(InputText):
-    global Output,LastLetter
+    global Output, LastLetter
     Output = []  # 保留查询的结果
 
     SearchInIndex(InputText)  # 查看是否收录在词典中
@@ -118,6 +116,8 @@ def ConvertConjugate(InputText):
     elif LastLetter in NeedOnceProcess_itidann:
         ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'る')
         SearchInIndex(ProcessText)
+        ProcessText = ProcessNeedOnceProcess_Godan(InputText)
+        SearchInIndex(ProcessText)
     elif LastLetter in NeedOnceProcess_godann:
         ProcessText = ProcessNeedOnceProcess_Godan(InputText)
         SearchInIndex(ProcessText)
@@ -125,13 +125,13 @@ def ConvertConjugate(InputText):
         SearchInIndex(ProcessText)
     elif LastLetter in NeedTwiceProcess:
         ProcessText = InputText  # 原型
-        SearchInIndex(ProcessText) 
+        SearchInIndex(ProcessText)
         ProcessText = InputText[0:-1] + \
             InputText[-1].replace(LastLetter, 'い')  # 形容词
         SearchInIndex(ProcessText)
         ProcessText = InputText[0:-1] + \
             InputText[-1].replace(LastLetter, 'る')
-        SearchInIndex(ProcessText) 
+        SearchInIndex(ProcessText)
         ProcessText = GetGodannJiSho(InputText)
         SearchInIndex(ProcessText)
     elif LastLetter == 'っ':  # る五段/つ/う
@@ -141,6 +141,7 @@ def ConvertConjugate(InputText):
         SearchInIndex(ProcessText)
         ProcessText = InputText[0:-1] + \
             InputText[-1].replace(LastLetter, 'う')
+        SearchInIndex(ProcessText)
         if InputText == '行っ':
             Output.append('行く')
             SearchInIndex(ProcessText)
@@ -148,10 +149,10 @@ def ConvertConjugate(InputText):
     elif LastLetter == 'さ':
         ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'い')
         SearchInIndex(ProcessText)
-        
+
         ProcessText = InputText[0:-1]+InputText[-1].replace(LastLetter, 'す')
         SearchInIndex(ProcessText)
-        
+
         ProcessText = InputText[0:-1] + \
             InputText[-1].replace(LastLetter, 'る')
         SearchInIndex(ProcessText)
@@ -179,24 +180,23 @@ def ConvertConjugate(InputText):
         ProcessText = InputText[0:-2]+InputText[-2:].replace('ちゃ', 'る')
         SearchInIndex(ProcessText)
     else:
-         Output.append(InputText)
-    Output.append(InputText) #任何情况下都返回复制的值，便于手动修改
-    
+        print("词尾假名出现例外情况！"+InputText)
+        Output.append(InputText)
+    Output.append(InputText)  # 任何情况下都返回复制的值，便于手动修改
+
     # 删除其中的重复值，只保留第一次的结果
-    ProcessOutput = [] 
+    ProcessOutput = []
     for item in Output:
         if item not in ProcessOutput:
             ProcessOutput.append(item)
 
-    CLipboradTexts = str(ProcessOutput).replace("'", "")
-    CLipboradTexts = CLipboradTexts.replace('[','')
-    CLipboradTexts = CLipboradTexts.replace(']','')
-    CLipboradTexts = CLipboradTexts.replace(', ','\n')
+    # 注意，直接使用join遇到数字时会报错，但通过剪贴板获取的数字会被转为字符串
+    CLipboradTexts = '\n'.join(ProcessOutput)
     return CLipboradTexts
 
-InputText ='行っ'
 
-print(ConvertConjugate(InputText))
-
+InputText = '行っ'
+OutputText = ConvertConjugate(InputText)
+print(OutputText)
 EndTime = time.perf_counter()
 print('耗时:%s毫秒' % (round((EndTime - StartTime)*1000, 3)))
