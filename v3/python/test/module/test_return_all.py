@@ -48,7 +48,7 @@ def SearchInIndex(SearchText):
         return False
 
 
-def ProcessNeedOnceProcess_Godan(InputText):
+def ProcessNeedOnceProcess_Godan(InputText): # 请确保是五段动词活用可能出现的词尾再调用该函数
     if LastLetter in 'わえお':
         ProcessResult = InputText[0:-1]+'う'
     elif LastLetter in 'かきけこ':
@@ -77,13 +77,10 @@ NeedOnceProcess_itidann = '、ずよぬ'
 NeedOnceProcess_godann = 'わえおがきぎげこごしせにねのばびべぼめもり'
 NeedOnceProcess_adj = 'くうす'
 
-NeedTwiceProcess = 'かすたらけみろまそぬれなくとうてち'
 
-NeedTwiceProcess_Jisho = 'すぬくう'  # 这几个词尾假名可能是来自：原型
 
-NeedTwiceProcess_adj = 'かけみそ'  # 这几个词尾来源：形容词/一段/五段
-
-NeedTwiceProcess_itidann = 'たらろまれなとてち'  # 这些只可能来自一段/五段
+NeedTwiceProcess_adj_godann = 'かけみそ'  # 这几个词尾来源：形容词/五段
+NeedTwiceProcess_itidann_godann = 'たちてとなまられろ'  # 这些只可能来自一段/五段
 
 
 ProcessPath = os.getcwd()
@@ -98,30 +95,32 @@ def ConvertConjugate(InputText):
 
     ProcessText = InputText+'る'  # 一段动词的连用形1
     SearchInIndex(ProcessText)
-    if LastLetter in NeedTwiceProcess_Jisho:
-        ProcessText = InputText[0:-1] + 'い'
-        SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + 'る'
-        SearchInIndex(ProcessText)
-    elif LastLetter in NeedOnceProcess_itidann:
+    if LastLetter in NeedOnceProcess_itidann:
+        print('词尾假名是：'+LastLetter+'有可能是一段动词')
         ProcessText = InputText[0:-1]+'る'
         SearchInIndex(ProcessText)
     elif LastLetter in NeedOnceProcess_godann:
+        print('词尾假名是：'+LastLetter+'有可能是五段动词')
         ProcessText = ProcessNeedOnceProcess_Godan(InputText)
         SearchInIndex(ProcessText)
     elif LastLetter in NeedOnceProcess_adj:
-        ProcessText = InputText[0:1]+'い'
+        print('词尾假名是：'+LastLetter+'有可能是形容词')
+        ProcessText = InputText[0:-1]+'い'
         SearchInIndex(ProcessText)
-    elif LastLetter in NeedTwiceProcess:
-        ProcessText = InputText  # 原型
+    elif LastLetter in NeedTwiceProcess_adj_godann:
+        print('词尾假名是：'+LastLetter+'有可能是形容词，也有可能是五段动词')
+        ProcessText = InputText[0:-1] + 'い'
         SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + 'い'  # 形容词
+        ProcessText = GetGodannJiSho(InputText)
         SearchInIndex(ProcessText)
+    elif LastLetter in NeedTwiceProcess_itidann_godann:
+        print('词尾假名是：'+LastLetter+'有可能是一段动词，也有可能是五段动词')
         ProcessText = InputText[0:-1] + 'る'
         SearchInIndex(ProcessText)
         ProcessText = GetGodannJiSho(InputText)
         SearchInIndex(ProcessText)
-    elif LastLetter == 'っ':  # る五段/つ/う
+    elif LastLetter == 'っ':  
+        print('词尾假名是：'+LastLetter+'有可能是五段动词')
         ProcessText = InputText[0:-1] + 'る'
         SearchInIndex(ProcessText)
         ProcessText = InputText[0:-1]+'つ'
@@ -133,6 +132,7 @@ def ConvertConjugate(InputText):
             SearchInIndex(ProcessText)
             Output.append(InputText)
     elif LastLetter == 'さ':
+        print('词尾假名是：'+LastLetter+'有可能是形容词，也有可能是五段动词')
         ProcessText = InputText[0:-1]+'い'
         SearchInIndex(ProcessText)
 
@@ -143,6 +143,7 @@ def ConvertConjugate(InputText):
             InputText[-1].replace(LastLetter, 'る')
         SearchInIndex(ProcessText)
     elif LastLetter == 'ん':
+        print('词尾假名是：'+LastLetter+'有可能是形容词，也有可能是五段动词')
         ProcessText = InputText[0:-1]+'む'
         SearchInIndex(ProcessText)
         ProcessText = InputText[0:-1]+'ぶ'
@@ -152,6 +153,7 @@ def ConvertConjugate(InputText):
         ProcessText = InputText[0:-1] + 'る'
         SearchInIndex(ProcessText)
     elif LastLetter == "い":
+        print('词尾假名是：'+LastLetter+'有可能是五段动词')
         ProcessText = InputText[0:-1] + 'う'
         SearchInIndex(ProcessText)
         ProcessText = InputText[0:-1] + 'く'
@@ -159,6 +161,7 @@ def ConvertConjugate(InputText):
         ProcessText = InputText[0:-1] + 'ぐ'
         SearchInIndex(ProcessText)
     elif LastLetter == 'ゃ':
+        print('词尾假名是：'+LastLetter+'有可能是一段动词')
         ProcessText = InputText[0:-2] + 'る'
         SearchInIndex(ProcessText)
     else:
@@ -177,7 +180,7 @@ def ConvertConjugate(InputText):
     return CLipboradTexts
 
 
-InputText = '被せず'
+InputText = 'あいあいしす'
 OutputText = ConvertConjugate(InputText)
 print(OutputText)
 EndTime = time.perf_counter()
