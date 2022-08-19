@@ -193,6 +193,45 @@ def ConverHina2kata(InputText):
     return OutputText
 
 
+def ConverRepeSingleSign(InputText):
+    # 这些符号只代表一个假名或者汉字，注意ゝヽ不一定出现在单词的结尾部分，例如：やがて再び唇をわなゝかした
+    reg = r'(\w{1})(々|〻|ゝ|ヽ)'
+    OutputText = re.sub(reg, r'\1\1', InputText)
+    return OutputText
+
+
+def ConverRepeSingleDakuSign(InputText):
+    reg = r'^(.*?)(\w{1})(ヾ|ゞ)(.*?)$'
+    ProcessText = re.match(reg, InputText)
+    OutputText = ProcessText.group(
+        1)+ProcessText.group(2)+chr(int(ord(ProcessText.group(2)))+1)+ProcessText.group(4)
+    return OutputText
+
+
+def ConverRepeDoubleSign(InputText):
+    reg = r'^(\w{2})(〳〵|／＼)(.*?)$'  # 这些符号代表2个假名或者汉字
+    OutputText = re.sub(reg, r'\1\1\3', InputText)
+    return OutputText
+
+
+def ConverRepeDoubleDakuSign(InputText):
+    ProcessText = re.match(r'^(.*?)(〴〵|／″＼)(.*?)$', InputText)
+    if re.search(r'[^\u3040-\u30ff]', ProcessText.group(1)) != None:  # 注意：代わる〴〵
+        print('now')
+        reg = r'^(.*?)(〴〵|／″＼)(.*?)$'
+        OutputText = re.sub(reg, r'\1\1\3', InputText)
+    else:
+        reg = r'^(\w{1})(\w{1})(〴〵|／″＼)$'  # 第一个分组是需要浊化的假名，第二个分组不需要处理
+        sub = r'\1\2'
+        ProcessText = re.match(reg, InputText)
+        OutputText = ProcessText.group(
+            1)+ProcessText.group(2)+chr(int(ord(ProcessText.group(2)))+1)
+        ProcessText = re.sub(reg, sub, InputText)
+        OutputText = ProcessText + \
+            chr(int(ord(ProcessText[0]))+1)+ProcessText[1]
+    return OutputText
+
+
 InputText = pyperclip.paste()
 
 # 预处理
@@ -200,6 +239,14 @@ if '(' in InputText:  # 删除Word等使用的注音假名，注意是半角()
     InputText = DelWordRuby(InputText)
 if re.search(r'^[\u30a0-\u30ff]*?$', InputText) != None:  # 转换片假名书写的单词
     InputText = ConverHina2kata(InputText)
+if re.search(r'(\w{1})(々|〻|ゝ|ヽ)', InputText) != None:
+    InputText = ConverRepeSingleSign(InputText)
+if re.search(r'^(.*?)(\w{1})(ヾ|ゞ)(.*?)$', InputText) != None:
+    InputText = ConverRepeSingleDakuSign(InputText)
+if re.search(r'^(\w{2})(〳〵|／＼)(.*?)$', InputText) != None:
+    InputText = ConverRepeDoubleSign(InputText)
+if re.search(r'^(.*?)(〴〵|／″＼)(.*?)$', InputText) != None:
+    InputText = ConverRepeDoubleDakuSign(InputText)
 
 
 OutputText = ConvertConjugate(InputText)
