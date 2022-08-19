@@ -185,9 +185,25 @@ def DelWordRuby(ProcessText):
     return OutputText
 
 
+def ConverHina2kata(InputText):
+    ProcessTexts = []
+    for gana in InputText:
+        if 12448 < int(ord(gana)) < 12543:  # 匹配片假名
+            hira = chr(int(ord(gana) - 96))
+            ProcessTexts.append(hira)
+    OutputText = ''.join(ProcessTexts)
+    return OutputText
+
+
 InputText = ''
-if '(' in InputText:
+
+# 预处理
+if '(' in InputText:  # 删除Word等使用的注音假名，注意是半角()
     InputText = DelWordRuby(InputText)
+if re.search(r'^[\u30a0-\u30ff]*?$', InputText) != None:  # 转换片假名书写的单词
+    InputText = ConverHina2kata(InputText)
+
+
 OutputText = ConvertConjugate(InputText)
 print(OutputText)
 EndTime = time.perf_counter()

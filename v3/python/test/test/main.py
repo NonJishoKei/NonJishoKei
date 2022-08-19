@@ -175,6 +175,15 @@ def DelWordRuby(ProcessText):
     return OutputText
 
 
+def ConverHina2kata(InputText):
+    ProcessTexts = []
+    for gana in InputText:
+        if 12448 < int(ord(gana)) < 12543:  # 匹配片假名
+            hira = chr(int(ord(gana) - 96))
+            ProcessTexts.append(hira)
+    OutputText = ''.join(ProcessTexts)
+    return OutputText
+
 with open('temp.txt', 'r', encoding='utf-8') as f, open('save.txt', 'w', encoding='utf-8')as s:
     FileContextList = f.readlines()
     i = 0
@@ -185,6 +194,8 @@ with open('temp.txt', 'r', encoding='utf-8') as f, open('save.txt', 'w', encodin
         InputText = NonJishoText.group().replace('\t', '')
         if '(' in InputText:
             InputText = DelWordRuby(InputText)
+        if re.search(r'^[\u30a0-\u30ff]*?$', InputText) != None:  # 转换片假名书写的单词
+            InputText = ConverHina2kata(InputText)
         Output = []
         ConvertConjugate(InputText)
         s.write(str(Output).replace("'", "")+'\t'+line)
