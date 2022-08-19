@@ -232,9 +232,16 @@ def ConverRepeDoubleDakuSign(InputText):
     return OutputText
 
 
-InputText = pyperclip.paste()
+def DelOCRError(InputText):
+    InputText = InputText.replace(' ', '')  # 半角空格
+    InputText = InputText.replace('\r','') # Mac换行
+    OutputText = InputText.replace('\n','') # # Linux换行,Window端的\r\n也被删除
+    return OutputText
 
+
+InputText = pyperclip.paste()
 # 预处理
+InputText = DelOCRError(InputText)
 if '(' in InputText:  # 删除Word等使用的注音假名，注意是半角()
     InputText = DelWordRuby(InputText)
 if re.search(r'^[\u30a0-\u30ff]*?$', InputText) != None:  # 转换片假名书写的单词

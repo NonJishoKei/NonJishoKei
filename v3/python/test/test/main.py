@@ -224,6 +224,12 @@ def ConverRepeDoubleDakuSign(InputText):
     return OutputText
 
 
+def DelOCRError(InputText):
+    InputText = InputText.replace(' ', '')  # 半角空格
+    OutputText = InputText.replace('\n', '')
+    return OutputText
+
+
 with open('temp.txt', 'r', encoding='utf-8') as f, open('save.txt', 'w', encoding='utf-8')as s:
     FileContextList = f.readlines()
     i = 0
@@ -234,7 +240,8 @@ with open('temp.txt', 'r', encoding='utf-8') as f, open('save.txt', 'w', encodin
         InputText = NonJishoText.group().replace('\t', '')
 
         # 预处理
-        if '(' in InputText:
+        InputText = DelOCRError(InputText)
+        if '(' in InputText:  # 删除Word等使用的注音假名，注意是半角()
             InputText = DelWordRuby(InputText)
         if re.search(r'^[\u30a0-\u30ff]*?$', InputText) != None:  # 转换片假名书写的单词
             InputText = ConverHina2kata(InputText)
