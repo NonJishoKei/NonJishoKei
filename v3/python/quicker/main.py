@@ -131,12 +131,9 @@ def ConvertConjugate(InputText):
         print('词尾假名是：'+LastLetter+'有可能是形容词，也有可能是五段动词')
         ProcessText = InputText[0:-1]+'い'
         SearchInIndex(ProcessText)
-
         ProcessText = InputText[0:-1]+'す'
         SearchInIndex(ProcessText)
-
-        ProcessText = InputText[0:-1] + \
-            InputText[-1].replace(LastLetter, 'る')
+        ProcessText = InputText[0:-1] + 'る'
         SearchInIndex(ProcessText)
     elif LastLetter == 'ん':
         print('词尾假名是：'+LastLetter+'有可能是形容词，也有可能是五段动词')
@@ -234,8 +231,8 @@ def ConverRepeDoubleDakuSign(InputText):
 
 def DelOCRError(InputText):
     InputText = InputText.replace(' ', '')  # 半角空格
-    InputText = InputText.replace('\r','') # Mac换行
-    OutputText = InputText.replace('\n','') # # Linux换行,Window端的\r\n也被删除
+    InputText = InputText.replace('\r', '')  # Mac换行
+    OutputText = InputText.replace('\n', '')  # Linux换行,Window端的\r\n也被删除
     return OutputText
 
 

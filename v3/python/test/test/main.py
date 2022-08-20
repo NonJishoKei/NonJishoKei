@@ -87,10 +87,8 @@ ProcessPath = os.getcwd()
 def ConvertConjugate(InputText):
     global Output, LastLetter
     Output = []  # 保留查询的结果
-
     SearchInIndex(InputText)  # 查看是否收录在词典中
     LastLetter = InputText.replace('\n', '')[-1]
-
     ProcessText = InputText+'る'  # 一段动词的连用形1
     SearchInIndex(ProcessText)
     if LastLetter in NeedOnceProcess_itidann:
@@ -126,12 +124,9 @@ def ConvertConjugate(InputText):
     elif LastLetter == 'さ':
         ProcessText = InputText[0:-1]+'い'
         SearchInIndex(ProcessText)
-
         ProcessText = InputText[0:-1]+'す'
         SearchInIndex(ProcessText)
-
-        ProcessText = InputText[0:-1] + \
-            InputText[-1].replace(LastLetter, 'る')
+        ProcessText = InputText[0:-1] + 'る'
         SearchInIndex(ProcessText)
     elif LastLetter == 'ん':
         ProcessText = InputText[0:-1]+'む'

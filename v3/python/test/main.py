@@ -87,10 +87,8 @@ ProcessPath = os.getcwd()
 def ConvertConjugate(InputText):
     global Output, LastLetter
     Output = []  # 保留查询的结果
-
     SearchInIndex(InputText)  # 查看是否收录在词典中
     LastLetter = InputText.replace('\n', '')[-1]
-
     ProcessText = InputText+'る'  # 一段动词的连用形1
     SearchInIndex(ProcessText)
     if LastLetter in NeedOnceProcess_itidann:
