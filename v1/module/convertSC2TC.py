@@ -6,10 +6,9 @@ import re
 请注意，使用这种方法并不能完全得到所有对应的日文汉字，如果你有更好的方法，欢迎发送邮件到NoHeartPen@outlook.com与我交流
 '''
 
-# 获取当前工作目录，打开工作目录下的txt文件
-file = '..\待处理.txt'
-file_for_save = "..\目标.txt"  # 此处是生成的文件的名字和路径
-Error_Lines_Save = "..\异常.txt"  # 若出现异常，异常行保存的文件的位置
+
+file = r'..\temp.txt'# 获取当前工作目录，打开工作目录下的txt文件
+file_for_save = r'..\save.txt'  # 此处是生成的文件的名字和路径
 
 
 def convert(jas):
@@ -31,7 +30,7 @@ with open(file,
         pattern = re.compile('(.*?)\t')
         result = pattern.match(line)
         if result:
-            new_line = str(convert(result)) + "\n"
+            new_line = str(convert(result)) + '\n'
             file_done.write(new_line)
         else:
-            file_done.write(line + "\n")
+            file_done.write(line + '\n')

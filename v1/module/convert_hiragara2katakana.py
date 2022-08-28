@@ -2,10 +2,10 @@
 
 def format_list2str(list_element):
     list_element = str(list_element)
-    list_element = list_element.replace(",", "")
-    list_element = list_element.replace("[", "")
-    list_element = list_element.replace("]", "")
-    str_element = list_element.replace("'", "")
+    list_element = list_element.replace(',', '')
+    list_element = list_element.replace('[', '')
+    list_element = list_element.replace(']', '')
+    str_element = list_element.replace("'", '')
     return str_element
 
 
@@ -27,7 +27,7 @@ InputFile = r'temp.md'
 OutpurFile = r'save.md'
 
 OutpurFileContext = []
-with open(InputFile,encoding="UTF-8") as f:
+with open(InputFile,encoding='UTF-8') as f:
     for line in f:
         line = hiragara_katakana(line)
         line = format_list2str(line)
