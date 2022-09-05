@@ -1,14 +1,12 @@
 '''
-自动转换那些日语独有的标记，本项目参考了这份来自日本文化厅的
+自动转换那些日语独有的标记，本项目参考了一份来自日本文化厅的文件
 々〻（汉字重复标记，后者主要用于手写，但考虑到OCR等场景，算作一类）例子：度々、度〻、明々白々
 ゝゞヽヾ（假名的重复标记，多见于比较老的文章）例子：こゝろ、ほヾ
 〳〵／＼（前者是Unicode编码，后者来自青空文库）例子：いよ〳〵、しげ／＼（注意这种字符串的\通过pyperclip传递时不会被转义）
 〴〵／″＼（前者是Unicode编码，后者来自青空文库）例子：しみ〴〵、しみ／″＼
 '''
-from contextlib import nullcontext
 import re
 import time
-from xml.sax.xmlreader import InputSource
 import pyperclip
 
 StartTime = time.perf_counter()
