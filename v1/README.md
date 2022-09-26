@@ -1,11 +1,12 @@
 提前声明：这个文件夹是这个项目的早期尝试的产物，现在已不再维护，如果你感兴趣请自行研究。
 
+注：本文是日本語非辞書形辞典_v1 的[README 文档](https://github.com/NoHeartPen/NonJishoKei/blob/master/v1/README.md)。
 
 本文在如下平台有备份：
 
-[日本語非辞書形辞典_v1-FreeMdict论坛](https://forum.freemdict.com/t/topic/11523)
+[日本語非辞書形辞典_v1-FreeMdict 论坛](https://forum.freemdict.com/t/topic/11523)
 
-[v1算法细节-语雀](https://www.yuque.com/docs/share/5f01d60c-75eb-44d8-bd0d-d8fe71001ef4)
+[v1 算法细节-语雀](https://www.yuque.com/docs/share/5f01d60c-75eb-44d8-bd0d-d8fe71001ef4)
 
 # 前言
 
@@ -16,7 +17,8 @@
 <img src="https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//_00_00_00-00_00_30.gif" width="500">
 
 手机端
-![平时手机查单词](https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//Screenrecorder-2022-03-11-09-59-12-769%2000_00_00-00_00_30.gif)
+
+<img src="https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//Screenrecorder-2022-03-11-09-59-12-769%2000_00_00-00_00_30.gif" width="500">
 
   
 但上述方式十分依赖词库文件，如果词库文件没有收录复制粘贴的内容的话，就只能自己手打。
@@ -127,9 +129,11 @@
 接下面来谈平片假名。先以这句话中的拟声拟态词为例：`隅の方に小さくなって黙ってチョコチョコ働いていたものだから`
 
 如果直接输入`チョコチョコ`那 MOJi 和沪江给出的解释都是错的。
-![沪江 チョコチョコ](https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//Pasted_image_20220310204031.png)
 
-![MOJi チョコチョコ](https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//Pasted_image_20220310204259.png)
+<img src="https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//Pasted_image_20220310204031.png" width="500">
+
+
+<img src="https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//Pasted_image_20220310204259.png" width="500">
 
 因为这个单词其实就是`ちょこちょこ`，作者是出于强调动作的缘故，才写成了片假名，明白了这一点，再去查。
 
@@ -137,9 +141,11 @@
 
 
 当然，也不只有拟声拟态词会这样写，有些时候，还出现下面这样的情况`ハタから見た感じを云えば、執方かと云うと、陰鬱な、無口な児のように思えました`，这里的ハタ其实可以写`はた`，但如果直接去查`ハタ`，MOJi 和沪江给出的结果就令人哭笑不得了：
-![沪江 はた](https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//Pasted_image_20220310204100.png)
 
-![MOJi はた](https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//Pasted_image_20220310204540.png)
+<img src="https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//Pasted_image_20220310204100.png" width="500">
+
+
+<img src="https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//Pasted_image_20220310204540.png" width="500">
 
 另外，很多时候动物的名字也会写片假名，这里就不举例了。
 
@@ -174,7 +180,8 @@
 是的，而且还可以当作打字练习，以及培养联系语境-思考上下文-查单词-真正「习得」一个单词的习惯——走马观花地看看词典的解释并不会提高外语水平。
 
 但我有在 Kindle 上看书的习惯——Kindle 的词典功能是真的香，但可惜我买的版本不能打日语，这就非常难受了
-![kindle3 查词](https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//Kindle3.jpg)
+
+<img src="https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//Kindle3.jpg" width="500">
  
 虽然现在已经不用上面这台老古董了，但现在用的电子书阅读器博阅 P10，内置的词典功能也不支持变形（虽然可以装欧路词典），而用过墨水屏的都知道打字是什么体验……
 
@@ -184,9 +191,11 @@
 
 最后，Kindle APP 和 PC 端的虽然也有查词功能，但也查不了日语动词的变形，英语却没有问题，这就激起了我的好奇心——是做不到？还是不愿做？
 
-![Kindle APP 查词 变形](https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//1647057904006.jpg)
 
-![Kindle APP 查词变形](https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//1647057904003.jpg)
+<img src="https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//1647057904006.jpg" width="500">
+
+
+<img src="https://markdoen-1304943362.cos.ap-nanjing.myqcloud.com//1647057904003.jpg" width="500">
 
 以上总总，促使我花了接近 2 年的课余时间，摸索着解决了这篇文章提到的大部分问题。
 
