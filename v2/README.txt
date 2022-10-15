@@ -1,6 +1,38 @@
-# æ–‡ä»¶å¤¹è¯´æ˜
-
-[get](get)ï¼šä»mdxæºæ–‡ä»¶æå–å“è¯å’Œè¯æ¡
-[index](index)ï¼šä»¥å“è¯åˆ†ç±»ä¿å­˜çš„è¯æ¡
-[module](module)ï¼šæµ‹è¯•æ¨¡å—å’Œå…¶ä»–å¯èƒ½ä¼šç”¨åˆ°çš„è„šæœ¬
-[release_pub](release_pub)ï¼šmdxè¯å…¸æ–‡ä»¶æ‰“åŒ…éœ€è¦çš„ä¿¡æ¯æ–‡ä»¶ä»¥åŠmdxæ ¼å¼çš„è¯å…¸
+©À©¤get£º´ÓmdxÔ´ÎÄ¼şÌáÈ¡Æ·´ÊºÍ´ÊÌõ
+©¦      get_from_dajirinn3.0.py
+©¦      get_from_moji.py
+©¦      get_hinnsi_from_daijisenn.py
+©¦      get_hinnsi_from_nihonnkokugo.py
+©¦      get_special_dousi_from_daijisenn.py
+©¦      splitkotoba__from_nihonnkokugo.py
+©¦      split_from_nihonnkokugo.py
+©¦      
+©À©¤index£ºÒÔÆ·´Ê·ÖÀà±£´æµÄ´ÊÌõ
+©¦      adj.txt
+©¦      godann.txt
+©¦      hiragrana.txt
+©¦      itidann.txt
+©¦      sahenn.txt
+©¦      
+©À©¤module£º²âÊÔÄ£¿éºÍÆäËû¿ÉÄÜ»áÓÃµ½µÄ½Å±¾
+©¦      delete_duplicate _lines_for_release.py
+©¦      get_noma.py
+©¦      inflect_adj.py
+©¦      inflect_godann.py
+©¦      inflect_itidann.py
+©¦      inflect_sahenn.py
+©¦      
+©À©¤process£º¹ı³ÌÎÄ¼ş
+©¦      adj.txt
+©¦      godann.txt
+©¦      hiragrana.txt
+©¦      itidann.txt
+©¦      kagyou.txt
+©¦      noma.txt
+©¦      sahenn.txt
+©¦      
+©¸©¤release_pub£ºmdx´ÊµäÎÄ¼ş´ò°üĞèÒªµÄĞÅÏ¢ÎÄ¼şÒÔ¼°mdx¸ñÊ½µÄ´Êµä
+        description.html
+        NoJishoKei.mdx
+        title.html
+        
