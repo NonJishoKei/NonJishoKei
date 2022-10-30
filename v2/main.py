@@ -510,8 +510,34 @@ def InflectProcess():
 
 
 def PackProcess():
+    # 清理重复行
     os.system(
-        r"mdict --title release_pub\title.html --description release_pub\description.html -a process\ release_pub\NoJishoKei.mdx")
+        r"copy process\*.txt processpack.txt")
+    ProcessPackFile = r'processpack.txt'
+    ReleasePackFile = r'process\releasepack.txt'
+
+    FileContextSet = set()
+    with open(ProcessPackFile, "r", encoding="utf-8") as InputFile, open(ReleasePackFile, 'w', encoding='UTF-8') as OutputFile:
+        Context = InputFile.read()
+        Context = Context.replace('\n', '')
+        Context = Context.replace('</>', '</>\n')
+        Line = Context.split('\n')
+        for item in Line:
+            FileContextSet.add(item)
+        OutputFileContext = list(FileContextSet)
+        for item in OutputFileContext:
+            item = item.replace('<section class="description">',
+                                '\n<section class="description">')
+            if '</a>' in item:
+                item = item.replace('</a>', '</a>\n')
+            item = item.replace('</section></>', '</section>\n</>\n')
+            OutputFile.writelines(item)
+    # 打包
+    os.system(
+        r"mdict --title release_pub\title.html --description release_pub\description.html -a process\releasepack.txt release_pub\NoJishoKei.mdx")
+    # 删除过程文件
+    os.remove(ProcessPackFile)
+    os.remove(ReleasePackFile)
 
 
 InflectProcess()
