@@ -30,16 +30,16 @@ def GetGodannJiSho(InputText):  # 下表还可以再修改
     return GodannJiSho
 
 
-IndexTextList = []
+IndexTextSet = set()
 with open('v3_index.txt', 'r', encoding='utf-8') as f:
     IndexText = f.readlines()
     for i in IndexText:
-        IndexTextList.append(i.replace('\n', ''))
+        IndexTextSet.add(i.replace('\n', ''))
 
 
 def SearchInIndex(SearchText):
     print('尝试在索引中查找'+SearchText)
-    if SearchText in IndexTextList:
+    if SearchText in IndexTextSet:
         global SearchResult
         SearchResult = SearchText
         Output.append(SearchResult)
