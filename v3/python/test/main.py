@@ -9,7 +9,7 @@ StartTime = time.perf_counter()
 
 
 def GetGodannJiSho(InputText):  # 下表还可以再修改
-    GodanLastLetter = 'えおかがきぎけげこごさしせそたちてとなにねのばびべぼまみめもらりれろわ'
+    GodanLastLetter = set('えおかがきぎけげこごさしせそたちてとなにねのばびべぼまみめもらりれろわ')
     if LastLetter not in GodanLastLetter:
         print("非五段动词变形！")
     if LastLetter in 'がぎげご':
@@ -22,7 +22,7 @@ def GetGodannJiSho(InputText):  # 下表还可以再修改
         GodannJiSho = InputText[0:-1] + "う"
     else:
         Jisho_Dic = {}
-        GodanJishoLastLetter = 'うくすつぬぶむる'
+        GodanJishoLastLetter = set('うくすつぬぶむる')
         for i in GodanJishoLastLetter:
             Jisho_Dic[abs(ord(i)-ord(LastLetter))] = i  # 计算输入的假名与词尾原型假名之间的距离
         GodannJiSho = InputText[0:-1] + \
@@ -72,13 +72,13 @@ def ProcessNeedOnceProcess_Godan(InputText):  # 请确保是五段动词活用�
     return ProcessResult
 
 
-NeedOnceProcess_itidann = '、ずよぬ'
-NeedOnceProcess_godann = 'わえおがきぎげこごしせにねのばびべぼめもり'
-NeedOnceProcess_adj = 'くうす'
+NeedOnceProcess_itidann = set('、ずよぬ')
+NeedOnceProcess_godann = set('わえおがきぎげこごしせにねのばびべぼめもり')
+NeedOnceProcess_adj = set('くうす')
 
 
-NeedTwiceProcess_adj_godann = 'かけみそ'  # 这几个词尾来源：形容词/五段
-NeedTwiceProcess_itidann_godann = 'たちてとなまられろ'  # 这些只可能来自一段/五段
+NeedTwiceProcess_adj_godann = set('かけみそ')  # 这几个词尾来源：形容词/五段
+NeedTwiceProcess_itidann_godann = set('たちてとなまられろ')  # 这些只可能来自一段/五段
 
 
 ProcessPath = os.getcwd()
