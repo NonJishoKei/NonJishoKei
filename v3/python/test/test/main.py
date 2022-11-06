@@ -34,7 +34,30 @@ IndexTextSet = set()
 with open('v3_index.txt', 'r', encoding='utf-8') as f:
     IndexText = f.readlines()
     for i in IndexText:
-        IndexTextSet.add(i.replace('\n', ''))
+        if "\t" in i:
+            IndexTextSet.add(i.split("\t")[0].replace('\n', ''))
+        else:
+            IndexTextSet.add(i.replace('\n', ''))
+
+OrthographySet = set()
+OrthographyDict = dict()
+with open('v3_index.txt', 'r', encoding='utf-8') as f:
+    IndexText = f.readlines()
+    for item in IndexText:
+        item = item.replace('\n', '')
+        if "\t" in item:
+            OrthographySet.add(item.split("\t")[0])
+            OrthographyDict[item.split("\t")[0]] = item.split("\t")[1]
+        else:
+            continue
+
+
+def DisambiguateCompound(SearchText):
+    if SearchText in OrthographySet:
+        SearchResult = OrthographyDict.get(SearchText)
+        return SearchResult
+    else:
+        return SearchText
 
 
 def SearchInIndex(SearchText):
@@ -156,6 +179,7 @@ def ConvertConjugate(InputText):
     ProcessOutput = []
     for item in Output:
         if item not in ProcessOutput:
+            item = DisambiguateCompound(item)
             ProcessOutput.append(item)
 
     # 注意，直接使用join遇到数字时会报错，但通过剪贴板获取的数字会被转为字符串
@@ -250,8 +274,8 @@ with open('temp.txt', 'r', encoding='utf-8') as f, open('save.txt', 'w', encodin
             InputText = ConverRepeDoubleDakuSign(InputText)
 
         Output = []
-        ConvertConjugate(InputText)
-        s.write(str(Output).replace("'", "")+'\t'+line)
+        OutputText = str(ConvertConjugate(InputText)).replace("\n", ", ")
+        s.write(OutputText.replace("'", "")+'\t'+line)
         i += 1
         print(str(i/Len))
 os.system('python review_v3.py')
