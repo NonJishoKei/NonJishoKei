@@ -97,12 +97,12 @@ def ProcessNeedOnceProcess_Godan(InputText):  # 请确保是五段动词活用�
 
 
 NeedOnceProcess_itidann = set('、ずよぬ')
-NeedOnceProcess_godann = set('わえおがきぎげこごしせにねのばびべぼめもり')
+NeedOnceProcess_godann = set('わえおがきぎげこごしにねのばびべぼめもり')
 NeedOnceProcess_adj = set('くうす')
 
 
 NeedTwiceProcess_adj_godann = set('かけみそ')  # 这几个词尾来源：形容词/五段
-NeedTwiceProcess_itidann_godann = set('たちてとなまられろ')  # 这些只可能来自一段/五段
+NeedTwiceProcess_itidann_godann = set('せたちてとなまられろ')  # 这些只可能来自一段/五段
 
 
 ProcessPath = os.getcwd()
@@ -152,18 +152,16 @@ def ConvertConjugate(InputText):
             SearchInIndex(ProcessText)
             Output.append(InputText)
     elif LastLetter == 'さ':
-        print('词尾假名是：'+LastLetter+'有可能是形容词，也有可能是五段动词')
+        print('词尾假名是：'+LastLetter+'有可能是形容词，也有可能是五段动词，也有可能是一段动词')
         ProcessText = InputText[0:-1]+'い'
         SearchInIndex(ProcessText)
-
         ProcessText = InputText[0:-1]+'す'
         SearchInIndex(ProcessText)
-
         ProcessText = InputText[0:-1] + \
             InputText[-1].replace(LastLetter, 'る')
         SearchInIndex(ProcessText)
     elif LastLetter == 'ん':
-        print('词尾假名是：'+LastLetter+'有可能是形容词，也有可能是五段动词')
+        print('词尾假名是：'+LastLetter+'有可能是一段动词，也有可能是五段动词')
         ProcessText = InputText[0:-1]+'む'
         SearchInIndex(ProcessText)
         ProcessText = InputText[0:-1]+'ぶ'
@@ -173,7 +171,7 @@ def ConvertConjugate(InputText):
         ProcessText = InputText[0:-1] + 'る'
         SearchInIndex(ProcessText)
     elif LastLetter == "い":
-        print('词尾假名是：'+LastLetter+'有可能是五段动词')
+        print('词尾假名是：'+LastLetter+'有可能是五段动词活用，也有可能是辞書形')
         ProcessText = InputText[0:-1] + 'う'
         SearchInIndex(ProcessText)
         ProcessText = InputText[0:-1] + 'く'
@@ -263,7 +261,7 @@ def DelOCRError(InputText):
     return OutputText
 
 
-InputText = ''
+InputText = '歩く'
 
 # 预处理
 InputText = DelOCRError(InputText)

@@ -96,12 +96,12 @@ def ProcessNeedOnceProcess_Godan(InputText):  # 请确保是五段动词活用�
 
 
 NeedOnceProcess_itidann = set('、ずよぬ')
-NeedOnceProcess_godann = set('わえおがきぎげこごしせにねのばびべぼめもり')
+NeedOnceProcess_godann = set('わえおがきぎげこごしにねのばびべぼめもり')
 NeedOnceProcess_adj = set('くうす')
 
 
 NeedTwiceProcess_adj_godann = set('かけみそ')  # 这几个词尾来源：形容词/五段
-NeedTwiceProcess_itidann_godann = set('たちてとなまられろ')  # 这些只可能来自一段/五段
+NeedTwiceProcess_itidann_godann = set('せたちてとなまられろ')  # 这些只可能来自一段/五段
 
 
 ProcessPath = os.getcwd()
