@@ -31,25 +31,18 @@ def GetGodannJiSho(InputText):  # 下表还可以再修改
 
 
 IndexTextSet = set()
-with open('v3_index.txt', 'r', encoding='utf-8') as f:
-    IndexText = f.readlines()
-    for i in IndexText:
-        if "\t" in i:
-            IndexTextSet.add(i.split("\t")[0].replace('\n', ''))
-        else:
-            IndexTextSet.add(i.replace('\n', ''))
-
 OrthographySet = set()
 OrthographyDict = dict()
 with open('v3_index.txt', 'r', encoding='utf-8') as f:
-    IndexText = f.readlines()
-    for item in IndexText:
+    for item in f.readlines():
         item = item.replace('\n', '')
         if "\t" in item:
-            OrthographySet.add(item.split("\t")[0])
-            OrthographyDict[item.split("\t")[0]] = item.split("\t")[1]
+            Orthography = item.split("\t")[0]
+            OrthographySet.add(Orthography)
+            IndexTextSet.add(Orthography)
+            OrthographyDict[Orthography] = item.split("\t")[1]
         else:
-            continue
+            IndexTextSet.add(item)
 
 
 def DisambiguateCompound(SearchText):
