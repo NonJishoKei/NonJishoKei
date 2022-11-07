@@ -7,7 +7,7 @@ StartTime = time.perf_counter()
 
 
 def GetGodannJiSho(InputText):  # 下表还可以再修改
-    GodanLastLetter = 'えおかがきぎけげこごさしせそたちてとなにねのばびべぼまみめもらりれろわ'
+    GodanLastLetter = set('えおかがきぎけげこごさしせそたちてとなにねのばびべぼまみめもらりれろわ')
     if LastLetter not in GodanLastLetter:
         print("非五段动词变形！")
     if LastLetter in 'がぎげご':
@@ -20,7 +20,7 @@ def GetGodannJiSho(InputText):  # 下表还可以再修改
         GodannJiSho = InputText[0:-1] + "う"
     else:
         Jisho_Dic = {}
-        GodanJishoLastLetter = 'うくすつぬぶむる'
+        GodanJishoLastLetter = set('うくすつぬぶむる')
         for i in GodanJishoLastLetter:
             Jisho_Dic[abs(ord(i)-ord(LastLetter))] = i  # 计算输入的假名与词尾原型假名之间的距离
         GodannJiSho = InputText[0:-1] + \
@@ -28,16 +28,33 @@ def GetGodannJiSho(InputText):  # 下表还可以再修改
     return GodannJiSho
 
 
-IndexTextList = []
+IndexTextSet = set()
+OrthographySet = set()
+OrthographyDict = dict()
 with open('v3_index.txt', 'r', encoding='utf-8') as f:
-    IndexText = f.readlines()
-    for i in IndexText:
-        IndexTextList.append(i.replace('\n', ''))
+    for item in f.readlines():
+        item = item.replace('\n', '')
+        if "\t" in item:
+            Orthography = item.split("\t")[0]
+            OrthographySet.add(Orthography)
+            IndexTextSet.add(Orthography)
+            OrthographyDict[Orthography] = item.split("\t")[1]
+        else:
+            IndexTextSet.add(item)
+
+
+def DisambiguateCompound(SearchText):
+    if SearchText in OrthographySet:
+        SearchResult = OrthographyDict.get(SearchText)
+        print(SearchResult)
+        return SearchResult
+    else:
+        return SearchText
 
 
 def SearchInIndex(SearchText):
     print('尝试在索引中查找'+SearchText)
-    if SearchText in IndexTextList:
+    if SearchText in IndexTextSet:
         global SearchResult
         SearchResult = SearchText
         Output.append(SearchResult)
@@ -70,13 +87,13 @@ def ProcessNeedOnceProcess_Godan(InputText):  # 请确保是五段动词活用�
     return ProcessResult
 
 
-NeedOnceProcess_itidann = '、ずよぬ'
-NeedOnceProcess_godann = 'わえおがきぎげこごしせにねのばびべぼめもり'
-NeedOnceProcess_adj = 'くうす'
+NeedOnceProcess_itidann = set('、ずよぬ')
+NeedOnceProcess_godann = set('わえおがきぎげこごしにねのばびべぼめもり')
+NeedOnceProcess_adj = set('くうす')
 
 
-NeedTwiceProcess_adj_godann = 'かけみそ'  # 这几个词尾来源：形容词/五段
-NeedTwiceProcess_itidann_godann = 'たちてとなまられろ'  # 这些只可能来自一段/五段
+NeedTwiceProcess_adj_godann = set('かけみそ')  # 这几个词尾来源：形容词/五段
+NeedTwiceProcess_itidann_godann = set('せたちてとなまられろ')  # 这些只可能来自一段/五段
 
 
 ProcessPath = os.getcwd()
@@ -85,10 +102,8 @@ ProcessPath = os.getcwd()
 def ConvertConjugate(InputText):
     global Output, LastLetter
     Output = []  # 保留查询的结果
-
     SearchInIndex(InputText)  # 查看是否收录在词典中
     LastLetter = InputText.replace('\n', '')[-1]
-
     ProcessText = InputText+'る'  # 一段动词的连用形1
     SearchInIndex(ProcessText)
     if LastLetter in NeedOnceProcess_itidann:
@@ -128,15 +143,16 @@ def ConvertConjugate(InputText):
             SearchInIndex(ProcessText)
             Output.append(InputText)
     elif LastLetter == 'さ':
-        print('词尾假名是：'+LastLetter+'有可能是形容词，也有可能是五段动词')
+        print('词尾假名是：'+LastLetter+'有可能是形容词，也有可能是五段动词，也有可能是一段动词')
         ProcessText = InputText[0:-1]+'い'
         SearchInIndex(ProcessText)
         ProcessText = InputText[0:-1]+'す'
         SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + 'る'
+        ProcessText = InputText[0:-1] + \
+            InputText[-1].replace(LastLetter, 'る')
         SearchInIndex(ProcessText)
     elif LastLetter == 'ん':
-        print('词尾假名是：'+LastLetter+'有可能是形容词，也有可能是五段动词')
+        print('词尾假名是：'+LastLetter+'有可能是一段动词，也有可能是五段动词')
         ProcessText = InputText[0:-1]+'む'
         SearchInIndex(ProcessText)
         ProcessText = InputText[0:-1]+'ぶ'
@@ -146,7 +162,7 @@ def ConvertConjugate(InputText):
         ProcessText = InputText[0:-1] + 'る'
         SearchInIndex(ProcessText)
     elif LastLetter == "い":
-        print('词尾假名是：'+LastLetter+'有可能是五段动词')
+        print('词尾假名是：'+LastLetter+'有可能是五段动词活用，也有可能是辞書形')
         ProcessText = InputText[0:-1] + 'う'
         SearchInIndex(ProcessText)
         ProcessText = InputText[0:-1] + 'く'
@@ -166,6 +182,7 @@ def ConvertConjugate(InputText):
     ProcessOutput = []
     for item in Output:
         if item not in ProcessOutput:
+            item = DisambiguateCompound(item)
             ProcessOutput.append(item)
 
     # 注意，直接使用join遇到数字时会报错，但通过剪贴板获取的数字会被转为字符串
