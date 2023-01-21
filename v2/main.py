@@ -400,7 +400,15 @@ def PackProcess():
         for item in Line:
             FileContextSet.add(item)
         OutputFileContext = list(FileContextSet)
+
+        error_line_reg = re.compile(
+            r'^<section class="description">')  # 导致打包时报错，不符合mdx文件格式规范
+
         for item in OutputFileContext:
+            # if item == '<section class="description"><a href="entry://きる#description">きる</a></section></>':
+            if re.search(error_line_reg, item) != None:
+                print("出现空行异常，请注意检查！\n"+item)
+                continue
             item = item.replace('<section class="description">',
                                 '\n<section class="description">')
             if '</a>' in item:
