@@ -352,12 +352,36 @@ def InflectItidan():
         print("一段动词处理完成！")
 
 
+def InflectNoun():
+    with open(r"index\noun.txt",
+              'r', encoding='UTF-8') as InputFile, open(r"process\noun.txt",
+                                                        'w',
+                                                        encoding='utf-8') as OutputFile:
+        for line in InputFile:
+            line = line.replace('\n', '')
+            if line != "":
+                varriant = line.split('\t')[0]
+                jishokei = line.split('\t')[1]
+                if jishokei in IndexGroup:
+                    dichtml = r'<section class="description"><a href="entry://' + \
+                        jishokei+r'#description">' + \
+                        jishokei + \
+                        '</a>\n</section>\n</>'+'\n'
+                    if varriant not in IndexGroup:
+                        # 忽略词典中已收录的非辞書形
+                        OutputFile.write(varriant+"\n"+dichtml)
+                else:
+                    print("用户词典未收录："+line+"，无法跳转！")
+        print("名词处理完成！")
+
+
 def InflectProcess():
     InflectAdj()
     InflectGodan()
     InflectSahenn()
     InflectItidan()
     InflectHiragana()
+    InflectNoun()
 
 
 def PackProcess():
