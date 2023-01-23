@@ -26,27 +26,27 @@ def InflectAdj():
                         # 忽略词典中已收录的非辞書形
                         OutputFile.write(varriant+"\n"+dichtml)
                     # 处理变形
-                    line_1 = line[0:-1] + \
-                        line[-1].replace("い", "け" + '\n')+dichtml
-                    line_2 = line[0:-1] + \
-                        line[-1].replace("い", "か" + '\n')+dichtml
-                    line_3 = line[0:-1] + \
-                        line[-1].replace("い", "く" + '\n')+dichtml
-                    line_4 = line[0:-1] + \
-                        line[-1].replace("い", "う" + '\n')+dichtml
-                    line_5 = line[0:-1] + \
-                        line[-1].replace("い", "さ" + '\n')+dichtml
-                    line_6 = line[0:-1] + \
-                        line[-1].replace("い", "み" + '\n')+dichtml  # 部分形容词
-                    line_7 = line[0:-1] + \
-                        line[-1].replace("い", "そ" + '\n')+dichtml  # そうだ
-                    line_8 = line[0:-1] + \
-                        line[-1].replace("い", "す" + '\n')+dichtml  # すぎる
+                    line_1 = varriant[0:-1] + \
+                        varriant[-1].replace("い", "け" + '\n')+dichtml
+                    line_2 = varriant[0:-1] + \
+                        varriant[-1].replace("い", "か" + '\n')+dichtml
+                    line_3 = varriant[0:-1] + \
+                        varriant[-1].replace("い", "く" + '\n')+dichtml
+                    line_4 = varriant[0:-1] + \
+                        varriant[-1].replace("い", "う" + '\n')+dichtml
+                    line_5 = varriant[0:-1] + \
+                        varriant[-1].replace("い", "さ" + '\n')+dichtml
+                    line_6 = varriant[0:-1] + \
+                        varriant[-1].replace("い", "み" + '\n')+dichtml  # 部分形容词
+                    line_7 = varriant[0:-1] + \
+                        varriant[-1].replace("い", "そ" + '\n')+dichtml  # そうだ
+                    line_8 = varriant[0:-1] + \
+                        varriant[-1].replace("い", "す" + '\n')+dichtml  # すぎる
                     OutputFile.write(line_1+line_2+line_3+line_4 +
                                      line_5+line_6+line_7+line_8)
                 else:
-                    print(line)
-        print("五段动词处理完成！")
+                    print("用户词典未收录："+line+"，无法跳转！")
+        print("形容词处理完成！")
 
 
 def InflectSahenn():
