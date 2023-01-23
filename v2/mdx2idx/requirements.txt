@@ -1,0 +1,2 @@
+mdict-utils
+pyglossary
