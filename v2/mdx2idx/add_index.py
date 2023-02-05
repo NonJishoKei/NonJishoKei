@@ -2,6 +2,11 @@ import re
 import os
 from pathlib import Path
 
+# 创建工作目录
+process_path = ".\.process\dics"
+if os.path.exists(process_path) == False:
+    os.makedirs(process_path)
+
 # 扫描用户自定义的词典索引
 index_file = "..\index\index.txt"
 index_group = set()
