@@ -38,7 +38,8 @@ def GetGodannJiSho(InputText):  # 下表还可以再修改
 IndexTextSet = set()
 OrthographySet = set()
 OrthographyDict = dict()
-with open("v3_index.txt", "r", encoding="utf-8") as f:
+CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(CURRENT_PATH, "v3_index.txt"), "r", encoding="utf-8") as f:
     for item in f.readlines():
         item = item.replace("\n", "")
         if "\t" in item:
