@@ -9,7 +9,9 @@ StartTime = time.perf_counter()
 
 
 def GetGodannJiSho(InputText):  # 下表还可以再修改
-    GodanLastLetter = set("えおかがきぎけげこごさしせそたちてとなにねのばびべぼまみめもらりれろわ")
+    GodanLastLetter = set(
+        "えおかがきぎけげこごさしせそたちてとなにねのばびべぼまみめもらりれろわ"
+    )
     if LastLetter not in GodanLastLetter:
         print("非五段动词变形！")
     if LastLetter in "がぎげご":
@@ -24,7 +26,9 @@ def GetGodannJiSho(InputText):  # 下表还可以再修改
         Jisho_Dic = {}
         GodanJishoLastLetter = set("うくすつぬぶむる")
         for i in GodanJishoLastLetter:
-            Jisho_Dic[abs(ord(i) - ord(LastLetter))] = i  # 计算输入的假名与词尾原型假名之间的距离
+            Jisho_Dic[abs(ord(i) - ord(LastLetter))] = (
+                i  # 计算输入的假名与词尾原型假名之间的距离
+            )
         GodannJiSho = InputText[0:-1] + Jisho_Dic.get(
             min(Jisho_Dic.keys()), "无法判断该五段假名的原型"
         )
@@ -67,7 +71,9 @@ def SearchInIndex(SearchText):
         return False
 
 
-def ProcessNeedOnceProcess_Godan(InputText):  # 请确保是五段动词活用可能出现的词尾再调用该函数
+def ProcessNeedOnceProcess_Godan(
+    InputText,
+):  # 请确保是五段动词活用可能出现的词尾再调用该函数
     if LastLetter in "わえお":
         ProcessResult = InputText[0:-1] + "う"
     elif LastLetter in "かきけこ":
@@ -146,7 +152,11 @@ def ConvertConjugate(InputText):
             SearchInIndex(ProcessText)
             Output.append(InputText)
     elif LastLetter == "さ":
-        print("词尾假名是：" + LastLetter + "有可能是形容词，也有可能是五段动词，也有可能是一段动词")
+        print(
+            "词尾假名是："
+            + LastLetter
+            + "有可能是形容词，也有可能是五段动词，也有可能是一段动词"
+        )
         ProcessText = InputText[0:-1] + "い"
         SearchInIndex(ProcessText)
         ProcessText = InputText[0:-1] + "す"
