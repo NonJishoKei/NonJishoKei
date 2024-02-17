@@ -265,16 +265,26 @@ def ConverRepeDoubleDakuSign(InputText):
     return OutputText
 
 
-def DelOCRError(InputText):
-    InputText = InputText.replace(" ", "")  # 半角空格
-    OutputText = InputText.replace("\n", "")
-    return OutputText
+def del_ocr_error(input_text: str) -> str:
+    """Removes OCR errors from the input text.
+        移除 OCR 易识别错误的字符
+
+    Args:
+        input (str): a string containing OCR-detected text with spaces and newlines.
+
+    Returns:
+        str: a processed string with spaces and newlines removed.
+    """
+    input_text = input_text.replace(" ", "")
+    output_text = input_text.replace("\n", "")
+    output_text = input_text.replace("\r\n", "")
+    return output_text
 
 
 InputText = "歩く"
 
 # 预处理
-InputText = DelOCRError(InputText)
+InputText = del_ocr_error(InputText)
 if "(" in InputText:  # 删除Word等使用的注音假名，注意是半角()
     InputText = DelWordRuby(InputText)
 if re.search(r"^[\u30a0-\u30ff]*?$", InputText) != None:  # 转换片假名书写的单词
