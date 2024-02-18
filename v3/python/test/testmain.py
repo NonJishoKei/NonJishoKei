@@ -10,7 +10,7 @@ class TestMain(unittest.TestCase):
 
     """
 
-    def convert_repe_single_sign(self):
+    def test_convert_repe_single_sign(self):
         """单字符重复符号"""
         # https://ja.wikipedia.org/wiki/%E8%B8%8A%E3%82%8A%E5%AD%97
         # 々
