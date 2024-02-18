@@ -10,6 +10,13 @@ class TestMain(unittest.TestCase):
 
     """
 
+    def test_convert_kata_to_hira(self):
+        """将片假名转为平假名"""
+        self.assertEqual("くま", main.convert_kata_to_hira("クマ"))
+        self.assertEqual("ちょこちょこ", main.convert_kata_to_hira("チョコチョコ"))
+        # アニメ「ヴァイオレット・エヴァーガーデン」：会えない日が続くと　胸がグッと重くなったりしないか？
+        self.assertEqual("ぐっと", main.convert_kata_to_hira("グッと"))
+
     def test_convert_repe_single_sign(self):
         """单字符重复符号"""
         # https://ja.wikipedia.org/wiki/%E8%B8%8A%E3%82%8A%E5%AD%97

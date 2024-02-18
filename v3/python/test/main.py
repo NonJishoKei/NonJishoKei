@@ -210,14 +210,28 @@ def DelWordRuby(ProcessText):
     return OutputText
 
 
-def ConverHina2kata(InputText):
-    ProcessTexts = []
-    for gana in InputText:
-        if 12448 < int(ord(gana)) < 12543:  # 匹配片假名
-            hira = chr(int(ord(gana) - 96))
-            ProcessTexts.append(hira)
-    OutputText = "".join(ProcessTexts)
-    return OutputText
+def convert_kata_to_hira(input_text: str) -> str:
+    """Convert katakana to hiragana in the given text.
+    将片假名转为平假名
+
+    Args:
+        input_text (str): A String containing the katakana.
+
+    Returns:
+        str: The text with katakana converted to hiragana.
+    """
+    output_text = ""
+    for gana in input_text:
+        # 关于取值范围，请阅读下面的链接
+        # Read url for why the condition is 12448 and 13543
+        # https://www.unicode.org/charts/PDF/U30A0.pdf
+        gana_code = int(ord(gana))
+        if 12448 < gana_code < 12543:
+            hira = chr(gana_code - 96)
+            output_text = output_text + hira
+        else:
+            output_text = output_text + gana
+    return output_text
 
 
 def convert_repe_single_sign(input_text: str) -> str:
@@ -359,7 +373,7 @@ InputText = del_ocr_error(InputText)
 if "(" in InputText:  # 删除Word等使用的注音假名，注意是半角()
     InputText = DelWordRuby(InputText)
 if re.search(r"^[\u30a0-\u30ff]*?$", InputText) != None:  # 转换片假名书写的单词
-    InputText = ConverHina2kata(InputText)
+    InputText = convert_kata_to_hira(InputText)
 if re.search(r"(\w{1})(々|〻|ゝ|ヽ)", InputText) != None:
     InputText = convert_repe_single_sign(InputText)
 if re.search(r"^(.*?)(\w{1})(ヾ|ゞ)(.*?)$", InputText) != None:
