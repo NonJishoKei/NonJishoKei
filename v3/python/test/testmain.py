@@ -21,11 +21,15 @@ class TestMain(unittest.TestCase):
         self.assertEqual("おのおの", main.convert_repe_double_sign("おの／＼"))
         # 〳〵
         self.assertEqual("おのおの", main.convert_repe_double_sign("おの〳〵"))
-        self.assertEqual("くり返しくり返し", main.convert_repe_double_sign("くり返し〳〵"))
+        self.assertEqual(
+            "くり返しくり返し", main.convert_repe_double_sign("くり返し〳〵")
+        )
         # 〱
         self.assertEqual("見る見る", main.convert_repe_double_sign("見る〱"))
         # https://ja.wikipedia.org/wiki/%E8%B8%8A%E3%82%8A%E5%AD%97#%E3%80%B1%EF%BC%88%E3%81%8F%E3%81%AE%E5%AD%97%E7%82%B9%EF%BC%89
-        self.assertEqual("どうしてどうして", main.convert_repe_double_sign("どうして〱"))
+        self.assertEqual(
+            "どうしてどうして", main.convert_repe_double_sign("どうして〱")
+        )
         # 非正常输入测试
         self.assertEqual("おの／＼肌", main.convert_repe_double_sign("おの／＼肌"))
 
@@ -52,8 +56,7 @@ class TestMain(unittest.TestCase):
         # self.assertEqual("だんだん", main.convert_repe_double_daku_sign("だん／″＼"))
 
     def test_del_ocr_error(self):
-        """注意空格往往不止一个
-        """
+        """注意空格往往不止一个"""
         self.assertEqual("食べた", main.del_ocr_error(" 食べた"))
         self.assertEqual("食べた", main.del_ocr_error("食 べた"))
         self.assertEqual("食べた", main.del_ocr_error("食べた "))
