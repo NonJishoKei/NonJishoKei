@@ -230,19 +230,23 @@ def convert_repe_single_sign(input_text: str) -> str:
     Returns:
         str: The text with converted repeated single sign.
     """
-    reg = r"^(.*?)(\w{1})(々|〻|ゝ|ヽ)(.*?)$"
+    reg = r"^(.*?)(々|〻|ゝ|ヽ)(.*?)$"
     match = re.match(reg, input_text)
     if not match:
         return input_text
 
-    # 匹配单字符重复符号前的字符串（不包括单字符重复符号前的第一个字符串）
-    pre_text = match.group(1)
-    # 匹配单字符重复符号前的第一个字符串
-    char = match.group(2)
-    # 匹配单字符重复符号后的所有字符串
-    post_text = match.group(4)
-
-    output_text = pre_text + char + char + post_text
+    i = 0
+    output_text = ""
+    while i < len(input_text):
+        if i != 0:
+            if input_text[i] in "々〻ゝヽ":
+                output_text += input_text[i - 1]
+            else:
+                output_text += input_text[i]
+        else:
+            # 当"々"等符号位于第一个位置时，不做任何处理，例：々段
+            output_text += input_text[i]
+        i += 1
     return output_text
 
 
