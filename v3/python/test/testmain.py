@@ -10,6 +10,22 @@ class TestMain(unittest.TestCase):
 
     """
 
+    def test_del_word_ruby(self):
+        """移除假名注音"""
+        # ()
+        self.assertEqual("始む", main.del_word_ruby("始(はじ)む"))
+        # （）
+        self.assertEqual("始む", main.del_word_ruby("始（はじ）む"))
+        # 《》
+        # 其れはまだ人々が「愚《おろか》」と云う貴い徳を持って居て、世の中が今のように激しく軋《きし》み合わない時分であった。
+        # https://www.aozora.gr.jp/cards/001383/card56641.html
+        self.assertEqual("「愚」", main.del_word_ruby("「愚《おろか》」"))
+        self.assertEqual("軋み合わない", main.del_word_ruby("軋《きし》み合わない"))
+        # 非正常输入测试
+        # https://kotobank.jp/word/%E3%81%BC%E3%82%84%E3%81%BC%E3%82%84-631393
+        # ぼやぼや（と）しないでさっさと荷物を運べ
+        self.assertEqual("ぼやぼや（と）", main.del_word_ruby("ぼやぼや（と）"))
+
     def test_convert_kata_to_hira(self):
         """将片假名转为平假名"""
         self.assertEqual("くま", main.convert_kata_to_hira("クマ"))

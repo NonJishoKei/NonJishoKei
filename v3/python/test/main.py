@@ -203,11 +203,39 @@ def ConvertConjugate(InputText):
     return CLipboradTexts
 
 
-def DelWordRuby(ProcessText):
-    reg = r"\([\u3040-\u309f]*?\)"  # 参考Unicode码值，只匹配平假名
+def del_word_ruby(input_text: str) -> str:
+    """Removes ruby character from the input text.
+        移除假名注音
+
+    Args:
+        input (str) : A string contains ruby.
+
+    Returns:
+        str: The text with converted ruby character.
+    """
+    # 通过检查注音符号前的字符串是否是汉字，判断是否是在为汉字注音
+    # 汉字的 Unicode 编码范围请参考下面的链接
+    # https://www.unicode.org/charts/
+    reg = re.compile(
+        r"""(?P<cjk_unified_ideographs>[\u4E00-\u9FFF])|
+            (?P<extension_a>[\u3400-\u4DBF])|
+            (?P<extension_b>[\u20000-\u2A6DF])|
+            (?P<extension_c>[\u2A700-\u2B738])|
+            (?P<extension_d>[\u2B740-\u2B81D])|
+            (?P<extension_e>[\u2B820-\u2CEA1])|
+            (?P<extension_f>[\u2CEB0-\u2EBE0])|
+            (?P<extension_g>[\u30000-\u23134A])|
+            (?P<extension_h>[\u31350-\u323AF])|
+            (?P<extension_i>[\u2EBF0-\u2EE5F])(\(|（|《)(.*?)
+        """
+    )
+    if reg.search(input_text) is None:
+        return input_text
+
+    reg = re.compile(r"(\(|（|《)[\u3040-\u309f]*?(\)|）|》)")
     replacement = r""
-    OutputText = re.sub(reg, replacement, ProcessText)
-    return OutputText
+    output_text = re.sub(reg, replacement, input_text)
+    return output_text
 
 
 def convert_kata_to_hira(input_text: str) -> str:
@@ -371,7 +399,7 @@ InputText = "歩く"
 # 预处理
 InputText = del_ocr_error(InputText)
 if "(" in InputText:  # 删除Word等使用的注音假名，注意是半角()
-    InputText = DelWordRuby(InputText)
+    InputText = del_word_ruby(InputText)
 if re.search(r"^[\u30a0-\u30ff]*?$", InputText) != None:  # 转换片假名书写的单词
     InputText = convert_kata_to_hira(InputText)
 if re.search(r"(\w{1})(々|〻|ゝ|ヽ)", InputText) != None:
