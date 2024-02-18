@@ -245,24 +245,41 @@ def ConverRepeDoubleSign(InputText):
     return OutputText
 
 
-def ConverRepeDoubleDakuSign(InputText):
-    ProcessText = re.match(r"^(.*?)(〴〵|／″＼)(.*?)$", InputText)
-    if re.search(r"[^\u3040-\u30ff]", ProcessText.group(1)) != None:  # 注意：代わる〴〵
-        print("now")
-        reg = r"^(.*?)(〴〵|／″＼)(.*?)$"
-        OutputText = re.sub(reg, r"\1\1\3", InputText)
+def convert_repe_double_daku_sign(input_text: str) -> str:
+    """Convert a repeated double daku sign ( 〴〵, ／″＼) in the given text.
+        移除多字符浊音符号 〴〵、／″＼
+
+    Args:
+        input (str): A String containing the repeated double daku sign.
+
+    Returns:
+        str: The text with converted repeated double daku sign.
+    """
+    match = re.match(r"^(.*?)(〴〵|／″＼)(.*?)$", input_text)
+
+    if not match:
+        return input_text
+
+    # 匹配多字符浊音符号前的字符串
+    pre_input_text = match.group(1)
+    # 匹配多字符浊音符号后的字符串
+    post_input_text = match.group(3)
+
+    if re.search(r"[^\u3040-\u30ff]", pre_input_text) is not None:
+        # 如果多字符浊音符号前的字符串中不止汉字
+        # 比如像「代わる〴〵」这样，同时含有汉字和假名
+        # 那么拼接多字符浊音符号前的部分然后输出拼接后的字符串，例：「代わる代わる」
+        output_text = pre_input_text + pre_input_text + post_input_text
+    elif re.search(r"([\u3040-\u30ff]{1})(.*?)", pre_input_text) is not None:
+        # 提取多字符浊音符号前的字符串的第一个假名并计算出对应的浊音假名
+        # 拼接后输出拼接后的字符串
+        daku_character = chr(int(ord(pre_input_text[0])) + 1)
+        new_pre_input_text = daku_character + pre_input_text[1:]
+        output_text = pre_input_text + new_pre_input_text + post_input_text
     else:
-        reg = r"^(\w{1})(\w{1})(〴〵|／″＼)$"  # 第一个分组是需要浊化的假名，第二个分组不需要处理
-        sub = r"\1\2"
-        ProcessText = re.match(reg, InputText)
-        OutputText = (
-            ProcessText.group(1)
-            + ProcessText.group(2)
-            + chr(int(ord(ProcessText.group(2))) + 1)
-        )
-        ProcessText = re.sub(reg, sub, InputText)
-        OutputText = ProcessText + chr(int(ord(ProcessText[0])) + 1) + ProcessText[1]
-    return OutputText
+        print(f"input_text is: {input_text}")
+        return input_text
+    return output_text
 
 
 def del_ocr_error(input_text: str) -> str:
@@ -296,7 +313,7 @@ if re.search(r"^(.*?)(\w{1})(ヾ|ゞ)(.*?)$", InputText) != None:
 if re.search(r"^(\w{2})(〳〵|／＼)(.*?)$", InputText) != None:
     InputText = ConverRepeDoubleSign(InputText)
 if re.search(r"^(.*?)(〴〵|／″＼)(.*?)$", InputText) != None:
-    InputText = ConverRepeDoubleDakuSign(InputText)
+    InputText = convert_repe_double_daku_sign(InputText)
 
 
 OutputText = ConvertConjugate(InputText)
