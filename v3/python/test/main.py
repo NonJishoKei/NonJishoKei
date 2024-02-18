@@ -220,11 +220,30 @@ def ConverHina2kata(InputText):
     return OutputText
 
 
-def ConverRepeSingleSign(InputText):
-    # 这些符号只代表一个假名或者汉字，注意ゝヽ不一定出现在单词的结尾部分，例如：やがて再び唇をわなゝかした
-    reg = r"(\w{1})(々|〻|ゝ|ヽ)"
-    OutputText = re.sub(reg, r"\1\1", InputText)
-    return OutputText
+def convert_repe_single_sign(input_text: str) -> str:
+    """Converts a repeated single sign (々 or 〻 or ゝ or ヽ) in the given text.
+        移除单字符重复符号々、〻、ゝ、ヽ
+
+    Args:
+        input (str): A string containing the repeated single sign.
+
+    Returns:
+        str: The text with converted repeated single sign.
+    """
+    reg = r"^(.*?)(\w{1})(々|〻|ゝ|ヽ)(.*?)$"
+    match = re.match(reg, input_text)
+    if not match:
+        return input_text
+
+    # 匹配单字符重复符号前的字符串（不包括单字符重复符号前的第一个字符串）
+    pre_text = match.group(1)
+    # 匹配单字符重复符号前的第一个字符串
+    char = match.group(2)
+    # 匹配单字符重复符号后的所有字符串
+    post_text = match.group(4)
+
+    output_text = pre_text + char + char + post_text
+    return output_text
 
 
 def convert_repe_single_daku_sign(input_text: str) -> str:
@@ -338,7 +357,7 @@ if "(" in InputText:  # 删除Word等使用的注音假名，注意是半角()
 if re.search(r"^[\u30a0-\u30ff]*?$", InputText) != None:  # 转换片假名书写的单词
     InputText = ConverHina2kata(InputText)
 if re.search(r"(\w{1})(々|〻|ゝ|ヽ)", InputText) != None:
-    InputText = ConverRepeSingleSign(InputText)
+    InputText = convert_repe_single_sign(InputText)
 if re.search(r"^(.*?)(\w{1})(ヾ|ゞ)(.*?)$", InputText) != None:
     InputText = convert_repe_single_daku_sign(InputText)
 if re.search(r"^(\w{2})(〳〵|／＼)(.*?)$", InputText) != None:

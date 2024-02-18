@@ -10,6 +10,39 @@ class TestMain(unittest.TestCase):
 
     """
 
+    def convert_repe_single_sign(self):
+        """单字符重复符号"""
+        # https://ja.wikipedia.org/wiki/%E8%B8%8A%E3%82%8A%E5%AD%97
+        # 々
+        self.assertEqual("正正堂堂", main.convert_repe_single_sign("正々堂々"))
+        self.assertEqual("段段", main.convert_repe_single_sign("段々"))
+        self.assertEqual("赤裸裸", main.convert_repe_single_sign("赤裸々"))
+        self.assertEqual("告別式式場", main.convert_repe_single_sign("告別式々場"))
+
+        # 非正常输入测试
+        self.assertEqual("正正堂", main.convert_repe_single_sign("正々堂"))
+        self.assertEqual("々段", main.convert_repe_single_sign("々段"))
+        self.assertEqual("々堂堂", main.convert_repe_single_sign("々堂々"))
+        # TODO 极少数特例
+        # self.assertEqual("複複複線", main.convert_repe_single_sign("複々々線"))
+        # self.assertEqual("部分部分", main.convert_repe_single_sign("部分々々"))
+        # TODO 古く（奈良時代）は記法が異なり
+        # self.assertEqual("部分部分", main.convert_repe_single_sign("部々分々"))
+
+        # 〻 現代では「〻」は「々」と書き換えられ、主に縦書きの文章に用いる。
+        self.assertEqual("屡屡", main.convert_repe_single_sign("屡〻"))
+
+        # ゝ 平仮名繰返し記号
+        self.assertEqual("ここ", main.convert_repe_single_sign("こゝ"))
+        self.assertEqual("こころ", main.convert_repe_single_sign("こゝろ"))
+        self.assertEqual("わななかした", main.convert_repe_single_sign("わなゝかした"))
+
+        # ヽ 片仮名繰返し記号
+        self.assertEqual("ハハヽヽ", main.convert_repe_single_sign("ハヽヽヽ"))
+        # 曾ては、妣 （ ハヽ ） が国として、恋慕の思ひをよせた此国は、現実の悦楽に満ちた楽土として、見かはすばかりに変つて了うた。
+        # https://www.aozora.gr.jp/cards/000933/files/13212_14465.html
+        self.assertEqual("ハハ", main.convert_repe_single_sign("ハヽ"))
+
     def test_convert_repe_single_daku_sign(self):
         """单字符浊音重复符号"""
         # https://ja.wikipedia.org/wiki/%E8%B8%8A%E3%82%8A%E5%AD%97#%E3%82%9D%E3%81%A8%E3%83%BD%EF%BC%88%E4%B8%80%E3%81%AE%E5%AD%97%E7%82%B9%EF%BC%89
