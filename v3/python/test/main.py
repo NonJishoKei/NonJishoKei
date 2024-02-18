@@ -227,16 +227,31 @@ def ConverRepeSingleSign(InputText):
     return OutputText
 
 
-def ConverRepeSingleDakuSign(InputText):
+def convert_repe_single_daku_sign(input_text: str) -> str:
+    """Converts a repeated single daku sign (ヾ or ゞ) in the given text.
+        移除单字符浊音符号ヾ、ゞ
+
+    Args:
+        input_text (str): A string containing the repeated single daku sign.
+
+    Returns:
+        str: The text with converted repeated single daku sign.
+    """
     reg = r"^(.*?)(\w{1})(ヾ|ゞ)(.*?)$"
-    ProcessText = re.match(reg, InputText)
-    OutputText = (
-        ProcessText.group(1)
-        + ProcessText.group(2)
-        + chr(int(ord(ProcessText.group(2))) + 1)
-        + ProcessText.group(4)
-    )
-    return OutputText
+    match = re.match(reg, input_text)
+    if not match:
+        return input_text
+
+    # 匹配单字符浊音符前的字符串（不包括单字符浊音符前的第一个字符串）
+    pre_text = match.group(1)
+    # 计算单字符浊音符前的第一个字符串
+    char = match.group(2)
+    new_char = chr(ord(char) + 1)
+    # 匹配单字符浊音后的所有字符串
+    post_text = match.group(4)
+
+    output_text = pre_text + char + new_char + post_text
+    return output_text
 
 
 def convert_repe_double_sign(input_text: str) -> str:
@@ -325,7 +340,7 @@ if re.search(r"^[\u30a0-\u30ff]*?$", InputText) != None:  # 转换片假名书�
 if re.search(r"(\w{1})(々|〻|ゝ|ヽ)", InputText) != None:
     InputText = ConverRepeSingleSign(InputText)
 if re.search(r"^(.*?)(\w{1})(ヾ|ゞ)(.*?)$", InputText) != None:
-    InputText = ConverRepeSingleDakuSign(InputText)
+    InputText = convert_repe_single_daku_sign(InputText)
 if re.search(r"^(\w{2})(〳〵|／＼)(.*?)$", InputText) != None:
     InputText = convert_repe_double_sign(InputText)
 if re.search(r"^(.*?)(〴〵|／″＼)(.*?)$", InputText) != None:

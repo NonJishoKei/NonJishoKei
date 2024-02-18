@@ -10,6 +10,14 @@ class TestMain(unittest.TestCase):
 
     """
 
+    def test_convert_repe_single_daku_sign(self):
+        """单字符浊音重复符号"""
+        # https://ja.wikipedia.org/wiki/%E8%B8%8A%E3%82%8A%E5%AD%97#%E3%82%9D%E3%81%A8%E3%83%BD%EF%BC%88%E4%B8%80%E3%81%AE%E5%AD%97%E7%82%B9%EF%BC%89
+        self.assertEqual("ただ", main.convert_repe_single_daku_sign("たゞ"))
+        self.assertEqual("みすず飴", main.convert_repe_single_daku_sign("みすゞ飴"))
+        # FIXME 注意这个字符的定义：代表一个浊音假名，当前浊音符前的第一个假名就是浊音时，直接拼接返回即可
+        # self.assertEqual("ぶぶ漬け", main.convert_repe_single_daku_sign("ぶゞ漬け"))
+
     def test_convert_repeated_double_sign(self):
         """多字符重复符号"""
         # ／＼
