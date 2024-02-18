@@ -239,10 +239,26 @@ def ConverRepeSingleDakuSign(InputText):
     return OutputText
 
 
-def ConverRepeDoubleSign(InputText):
-    reg = r"^(\w{2})(〳〵|／＼)(.*?)$"  # 这些符号代表2个假名或者汉字
-    OutputText = re.sub(reg, r"\1\1\3", InputText)
-    return OutputText
+def convert_repe_double_sign(input_text: str) -> str:
+    """Converts repeated double sign in the given text.
+        移除多字符重复符号〳〵、／＼、〱
+
+    Args:
+        input_text (str): The text containing the repeated double sign.
+
+    Returns:
+        str: The text with converted repeated double sign.
+    """
+    match = re.match(r"^(.*?)(〳〵|／＼|〱)$", input_text)
+
+    if not match:
+        return input_text
+
+    # 匹配多字符重复符号前的字符串
+    pre_input_text = match.group(1)
+
+    output_text = pre_input_text + pre_input_text
+    return output_text
 
 
 def convert_repe_double_daku_sign(input_text: str) -> str:
@@ -311,7 +327,7 @@ if re.search(r"(\w{1})(々|〻|ゝ|ヽ)", InputText) != None:
 if re.search(r"^(.*?)(\w{1})(ヾ|ゞ)(.*?)$", InputText) != None:
     InputText = ConverRepeSingleDakuSign(InputText)
 if re.search(r"^(\w{2})(〳〵|／＼)(.*?)$", InputText) != None:
-    InputText = ConverRepeDoubleSign(InputText)
+    InputText = convert_repe_double_sign(InputText)
 if re.search(r"^(.*?)(〴〵|／″＼)(.*?)$", InputText) != None:
     InputText = convert_repe_double_daku_sign(InputText)
 

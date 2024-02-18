@@ -10,6 +10,25 @@ class TestMain(unittest.TestCase):
 
     """
 
+    def test_convert_repeated_double_sign(self):
+        """多字符重复符号"""
+        # ／＼
+        # Unicodeのブロックでは、収録されているの〳〵だが、
+        # https://ja.wikipedia.org/wiki/CJK%E3%81%AE%E8%A8%98%E5%8F%B7%E5%8F%8A%E3%81%B3%E5%8F%A5%E8%AA%AD%E7%82%B9
+        # 青空文庫では「／＼」を使っている。
+        # https://www.aozora.gr.jp/cards/001383/files/56641_59496.html
+        # 時々両国で催される刺青会では参会者おの／＼肌を叩いて、互に奇抜な意匠を誇り合い、評しあった。
+        self.assertEqual("おのおの", main.convert_repe_double_sign("おの／＼"))
+        # 〳〵
+        self.assertEqual("おのおの", main.convert_repe_double_sign("おの〳〵"))
+        self.assertEqual("くり返しくり返し", main.convert_repe_double_sign("くり返し〳〵"))
+        # 〱
+        self.assertEqual("見る見る", main.convert_repe_double_sign("見る〱"))
+        # https://ja.wikipedia.org/wiki/%E8%B8%8A%E3%82%8A%E5%AD%97#%E3%80%B1%EF%BC%88%E3%81%8F%E3%81%AE%E5%AD%97%E7%82%B9%EF%BC%89
+        self.assertEqual("どうしてどうして", main.convert_repe_double_sign("どうして〱"))
+        # 非正常输入测试
+        self.assertEqual("おの／＼肌", main.convert_repe_double_sign("おの／＼肌"))
+
     def test_convert_repeated_double_daku_sign(self):
         """多字符浊音符号"""
         # https://ja.wikisource.org/wiki/%E3%81%8F%E3%82%8A%E3%81%8B%E3%81%B8%E3%81%97%E7%AC%A6%E5%8F%B7%E3%81%AE%E4%BD%BF%E3%81%B2%E6%96%B9
