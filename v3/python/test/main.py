@@ -12,21 +12,21 @@ def GetGodannJiSho(InputText):  # 下表还可以再修改
     GodanLastLetter = set(
         "えおかがきぎけげこごさしせそたちてとなにねのばびべぼまみめもらりれろわ"
     )
-    if LastLetter not in GodanLastLetter:
+    if INPUT_LAST_LETTER not in GodanLastLetter:
         print("非五段动词变形！")
-    if LastLetter in "がぎげご":
+    if INPUT_LAST_LETTER in "がぎげご":
         GodannJiSho = InputText[0:-1] + "ぐ"
-    elif LastLetter == "と":
+    elif INPUT_LAST_LETTER == "と":
         GodannJiSho = InputText[0:-1] + "つ"
-    elif LastLetter == "ば":
+    elif INPUT_LAST_LETTER == "ば":
         GodannJiSho = InputText[0:-1] + "ぶ"
-    elif LastLetter == "わ":
+    elif INPUT_LAST_LETTER == "わ":
         GodannJiSho = InputText[0:-1] + "う"
     else:
         Jisho_Dic = {}
         GodanJishoLastLetter = set("うくすつぬぶむる")
         for i in GodanJishoLastLetter:
-            Jisho_Dic[abs(ord(i) - ord(LastLetter))] = (
+            Jisho_Dic[abs(ord(i) - ord(INPUT_LAST_LETTER))] = (
                 i  # 计算输入的假名与词尾原型假名之间的距离
             )
         GodannJiSho = InputText[0:-1] + Jisho_Dic.get(
@@ -65,7 +65,7 @@ def SearchInIndex(SearchText):
     if SearchText in IndexTextSet:
         global SearchResult
         SearchResult = SearchText
-        Output.append(SearchResult)
+        process_output_list.append(SearchResult)
         return SearchResult
     else:
         SearchResult = INPUT_TEXT + "无该索引"
@@ -75,21 +75,21 @@ def SearchInIndex(SearchText):
 def ProcessNeedOnceProcess_Godan(
     InputText,
 ):  # 请确保是五段动词活用可能出现的词尾再调用该函数
-    if LastLetter in "わえお":
+    if INPUT_LAST_LETTER in "わえお":
         ProcessResult = InputText[0:-1] + "う"
-    elif LastLetter in "かきけこ":
+    elif INPUT_LAST_LETTER in "かきけこ":
         ProcessResult = InputText[0:-1] + "く"
-    elif LastLetter in "がぎげご":
+    elif INPUT_LAST_LETTER in "がぎげご":
         ProcessResult = InputText[0:-1] + "ぐ"
-    elif LastLetter in "しせ":
+    elif INPUT_LAST_LETTER in "しせ":
         ProcessResult = InputText[0:-1] + "す"
-    elif LastLetter in "にねの":
+    elif INPUT_LAST_LETTER in "にねの":
         ProcessResult = InputText[0:-1] + "ぬ"
-    elif LastLetter in "ばびべぼ":
+    elif INPUT_LAST_LETTER in "ばびべぼ":
         ProcessResult = InputText[0:-1] + "ぶ"
-    elif LastLetter in "めも":
+    elif INPUT_LAST_LETTER in "めも":
         ProcessResult = InputText[0:-1] + "む"
-    elif LastLetter in "り":
+    elif INPUT_LAST_LETTER in "り":
         ProcessResult = InputText[0:-1] + "る"
     else:
         ProcessResult = InputText
@@ -109,98 +109,118 @@ NeedTwiceProcess_itidann_godann = set("せたちてとなまられろ")  # 这�
 ProcessPath = os.getcwd()
 
 
-def ConvertConjugate(InputText):
-    global Output, LastLetter
-    Output = []  # 保留查询的结果
-    SearchInIndex(InputText)  # 查看是否收录在词典中
-    LastLetter = InputText.replace("\n", "")[-1]
-    ProcessText = InputText + "る"  # 一段动词的连用形1
-    SearchInIndex(ProcessText)
-    if LastLetter in NeedOnceProcess_itidann:
-        print("词尾假名是：" + LastLetter + "有可能是一段动词")
-        ProcessText = InputText[0:-1] + "る"
-        SearchInIndex(ProcessText)
-    elif LastLetter in NeedOnceProcess_godann:
-        print("词尾假名是：" + LastLetter + "有可能是五段动词")
-        ProcessText = ProcessNeedOnceProcess_Godan(InputText)
-        SearchInIndex(ProcessText)
-    elif LastLetter in NeedOnceProcess_adj:
-        print("词尾假名是：" + LastLetter + "有可能是形容词")
-        ProcessText = InputText[0:-1] + "い"
-        SearchInIndex(ProcessText)
-    elif LastLetter in NeedTwiceProcess_adj_godann:
-        print("词尾假名是：" + LastLetter + "有可能是形容词，也有可能是五段动词")
-        ProcessText = InputText[0:-1] + "い"
-        SearchInIndex(ProcessText)
-        ProcessText = GetGodannJiSho(InputText)
-        SearchInIndex(ProcessText)
-    elif LastLetter in NeedTwiceProcess_itidann_godann:
-        print("词尾假名是：" + LastLetter + "有可能是一段动词，也有可能是五段动词")
-        ProcessText = InputText[0:-1] + "る"
-        SearchInIndex(ProcessText)
-        ProcessText = GetGodannJiSho(InputText)
-        SearchInIndex(ProcessText)
-    elif LastLetter == "っ":
-        print("词尾假名是：" + LastLetter + "有可能是五段动词")
-        ProcessText = InputText[0:-1] + "る"
-        SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + "つ"
-        SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + "う"
-        SearchInIndex(ProcessText)
-        if InputText == "行っ":
-            Output.append("行く")
-            SearchInIndex(ProcessText)
-            Output.append(InputText)
-    elif LastLetter == "さ":
+def convert_conjugate(input_text: str) -> str:
+    """convert a verb conjugation to basic form.
+        还原动词的活用变形
+
+    Args:
+        input_text (str): A String containing the conjugation.
+
+    Returns:
+        str: The text with conjugation converted to the basic form.
+    """
+    # FIXME  不使用 global
+    global process_output_list, INPUT_LAST_LETTER
+    process_output_list = []  # 保留查询的结果
+    SearchInIndex(input_text)  # 查看是否收录在词典中
+    INPUT_LAST_LETTER = input_text.replace("\n", "")[-1]
+    process_text = input_text + "る"  # 一段动词的连用形1
+    SearchInIndex(process_text)
+    if INPUT_LAST_LETTER in NeedOnceProcess_itidann:
+        print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是一段动词")
+        process_text = input_text[0:-1] + "る"
+        SearchInIndex(process_text)
+    elif INPUT_LAST_LETTER in NeedOnceProcess_godann:
+        print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是五段动词")
+        process_text = ProcessNeedOnceProcess_Godan(input_text)
+        SearchInIndex(process_text)
+    elif INPUT_LAST_LETTER in NeedOnceProcess_adj:
+        print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是形容词")
+        process_text = input_text[0:-1] + "い"
+        SearchInIndex(process_text)
+    elif INPUT_LAST_LETTER in NeedTwiceProcess_adj_godann:
+        print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是形容词，也有可能是五段动词")
+        process_text = input_text[0:-1] + "い"
+        SearchInIndex(process_text)
+        process_text = GetGodannJiSho(input_text)
+        SearchInIndex(process_text)
+    elif INPUT_LAST_LETTER in NeedTwiceProcess_itidann_godann:
+        print(
+            "词尾假名是：" + INPUT_LAST_LETTER + "有可能是一段动词，也有可能是五段动词"
+        )
+        process_text = input_text[0:-1] + "る"
+        SearchInIndex(process_text)
+        process_text = GetGodannJiSho(input_text)
+        SearchInIndex(process_text)
+    elif INPUT_LAST_LETTER == "っ":
+        print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是五段动词")
+        process_text = input_text[0:-1] + "る"
+        SearchInIndex(process_text)
+        process_text = input_text[0:-1] + "つ"
+        SearchInIndex(process_text)
+        process_text = input_text[0:-1] + "う"
+        SearchInIndex(process_text)
+        if input_text == "行っ":
+            process_output_list.append("行く")
+            SearchInIndex(process_text)
+            process_output_list.append(input_text)
+    elif INPUT_LAST_LETTER == "さ":
         print(
             "词尾假名是："
-            + LastLetter
+            + INPUT_LAST_LETTER
             + "有可能是形容词，也有可能是五段动词，也有可能是一段动词"
         )
-        ProcessText = InputText[0:-1] + "い"
-        SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + "す"
-        SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + InputText[-1].replace(LastLetter, "る")
-        SearchInIndex(ProcessText)
-    elif LastLetter == "ん":
-        print("词尾假名是：" + LastLetter + "有可能是一段动词，也有可能是五段动词")
-        ProcessText = InputText[0:-1] + "む"
-        SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + "ぶ"
-        SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + "ぬ"
-        SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + "る"
-        SearchInIndex(ProcessText)
-    elif LastLetter == "い":
-        print("词尾假名是：" + LastLetter + "有可能是五段动词活用，也有可能是辞書形")
-        ProcessText = InputText[0:-1] + "う"
-        SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + "く"
-        SearchInIndex(ProcessText)
-        ProcessText = InputText[0:-1] + "ぐ"
-        SearchInIndex(ProcessText)
-    elif LastLetter == "ゃ":
-        print("词尾假名是：" + LastLetter + "有可能是一段动词")
-        ProcessText = InputText[0:-2] + "る"
-        SearchInIndex(ProcessText)
+        process_text = input_text[0:-1] + "い"
+        SearchInIndex(process_text)
+        process_text = input_text[0:-1] + "す"
+        SearchInIndex(process_text)
+        process_text = input_text[0:-1] + input_text[-1].replace(
+            INPUT_LAST_LETTER, "る"
+        )
+        SearchInIndex(process_text)
+    elif INPUT_LAST_LETTER == "ん":
+        print(
+            "词尾假名是：" + INPUT_LAST_LETTER + "有可能是一段动词，也有可能是五段动词"
+        )
+        process_text = input_text[0:-1] + "む"
+        SearchInIndex(process_text)
+        process_text = input_text[0:-1] + "ぶ"
+        SearchInIndex(process_text)
+        process_text = input_text[0:-1] + "ぬ"
+        SearchInIndex(process_text)
+        process_text = input_text[0:-1] + "る"
+        SearchInIndex(process_text)
+    elif INPUT_LAST_LETTER == "い":
+        print(
+            "词尾假名是："
+            + INPUT_LAST_LETTER
+            + "有可能是五段动词活用，也有可能是辞書形"
+        )
+        process_text = input_text[0:-1] + "う"
+        SearchInIndex(process_text)
+        process_text = input_text[0:-1] + "く"
+        SearchInIndex(process_text)
+        process_text = input_text[0:-1] + "ぐ"
+        SearchInIndex(process_text)
+    elif INPUT_LAST_LETTER == "ゃ":
+        print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是一段动词")
+        process_text = input_text[0:-2] + "る"
+        SearchInIndex(process_text)
     else:
-        print("词尾假名出现例外情况！" + InputText)
-        Output.append(InputText)
-    Output.append(InputText)  # 任何情况下都返回复制的值，便于手动修改
+        print("词尾假名出现例外情况！" + input_text)
+        process_output_list.append(input_text)
+    process_output_list.append(input_text)  # 任何情况下都返回复制的值，便于手动修改
 
     # 删除其中的重复值，只保留第一次的结果
-    ProcessOutput = []
-    for item in Output:
-        if item not in ProcessOutput:
-            item = DisambiguateCompound(item)
-            ProcessOutput.append(item)
+    output_list = []
+    for i in process_output_list:
+        if i not in output_list:
+            i = DisambiguateCompound(i)
+            output_list.append(i)
 
     # 注意，直接使用join遇到数字时会报错，但通过剪贴板获取的数字会被转为字符串
-    CLipboradTexts = "\n".join(ProcessOutput)
-    return CLipboradTexts
+    output_text = "\n".join(output_list)
+    return output_text
 
 
 def del_word_ruby(input_text: str) -> str:
@@ -412,7 +432,7 @@ if re.search(r"^(.*?)(〴〵|／″＼)(.*?)$", INPUT_TEXT) is not None:
     INPUT_TEXT = convert_repe_double_daku_sign(INPUT_TEXT)
 
 
-OUTPUT_TEXT = ConvertConjugate(INPUT_TEXT)
+OUTPUT_TEXT = convert_conjugate(INPUT_TEXT)
 print(OUTPUT_TEXT)
 END_TIME = time.perf_counter()
 print(f"耗时:{round((END_TIME - START_TIME) * 1000, 3)}毫秒")
