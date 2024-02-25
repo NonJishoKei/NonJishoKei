@@ -5,7 +5,7 @@ import time
 """
 返回所有查询结果
 """
-StartTime = time.perf_counter()
+START_TIME = time.perf_counter()
 
 
 def GetGodannJiSho(InputText):  # 下表还可以再修改
@@ -68,7 +68,7 @@ def SearchInIndex(SearchText):
         Output.append(SearchResult)
         return SearchResult
     else:
-        SearchResult = InputText + "无该索引"
+        SearchResult = INPUT_TEXT + "无该索引"
         return False
 
 
@@ -394,25 +394,25 @@ def del_ocr_error(input_text: str) -> str:
     return output_text
 
 
-InputText = "歩く"
+INPUT_TEXT = "歩く"
 
 # 预处理
-InputText = del_ocr_error(InputText)
-if "(" in InputText:  # 删除Word等使用的注音假名，注意是半角()
-    InputText = del_word_ruby(InputText)
-if re.search(r"^[\u30a0-\u30ff]*?$", InputText) != None:  # 转换片假名书写的单词
-    InputText = convert_kata_to_hira(InputText)
-if re.search(r"(\w{1})(々|〻|ゝ|ヽ)", InputText) != None:
-    InputText = convert_repe_single_sign(InputText)
-if re.search(r"^(.*?)(\w{1})(ヾ|ゞ)(.*?)$", InputText) != None:
-    InputText = convert_repe_single_daku_sign(InputText)
-if re.search(r"^(\w{2})(〳〵|／＼)(.*?)$", InputText) != None:
-    InputText = convert_repe_double_sign(InputText)
-if re.search(r"^(.*?)(〴〵|／″＼)(.*?)$", InputText) != None:
-    InputText = convert_repe_double_daku_sign(InputText)
+INPUT_TEXT = del_ocr_error(INPUT_TEXT)
+if "(" in INPUT_TEXT:  # 删除Word等使用的注音假名，注意是半角()
+    INPUT_TEXT = del_word_ruby(INPUT_TEXT)
+if re.search(r"^[\u30a0-\u30ff]*?$", INPUT_TEXT) is not None:  # 转换片假名书写的单词
+    INPUT_TEXT = convert_kata_to_hira(INPUT_TEXT)
+if re.search(r"(\w{1})(々|〻|ゝ|ヽ)", INPUT_TEXT) is not None:
+    INPUT_TEXT = convert_repe_single_sign(INPUT_TEXT)
+if re.search(r"^(.*?)(\w{1})(ヾ|ゞ)(.*?)$", INPUT_TEXT) is not None:
+    INPUT_TEXT = convert_repe_single_daku_sign(INPUT_TEXT)
+if re.search(r"^(\w{2})(〳〵|／＼)(.*?)$", INPUT_TEXT) is not None:
+    INPUT_TEXT = convert_repe_double_sign(INPUT_TEXT)
+if re.search(r"^(.*?)(〴〵|／″＼)(.*?)$", INPUT_TEXT) is not None:
+    INPUT_TEXT = convert_repe_double_daku_sign(INPUT_TEXT)
 
 
-OutputText = ConvertConjugate(InputText)
-print(OutputText)
-EndTime = time.perf_counter()
-print("耗时:%s毫秒" % (round((EndTime - StartTime) * 1000, 3)))
+OUTPUT_TEXT = ConvertConjugate(INPUT_TEXT)
+print(OUTPUT_TEXT)
+END_TIME = time.perf_counter()
+print(f"耗时:{round((END_TIME - START_TIME) * 1000, 3)}毫秒")
