@@ -92,18 +92,10 @@ def ProcessNeedOnceProcess_Godan(
     elif INPUT_LAST_LETTER in "り":
         ProcessResult = InputText[0:-1] + "る"
     else:
+        # 抛出异常，不应该调用这个方法
         ProcessResult = InputText
         print(ProcessResult + "ProcessNeedOnceProcess_Godan异常")
     return ProcessResult
-
-
-NeedOnceProcess_itidann = set("、ずよぬ")
-NeedOnceProcess_godann = set("わえおがきぎげこごしにねのばびべぼめもり")
-NeedOnceProcess_adj = set("くうす")
-
-
-NeedTwiceProcess_adj_godann = set("かけみそ")  # 这几个词尾来源：形容词/五段
-NeedTwiceProcess_itidann_godann = set("せたちてとなまられろ")  # 这些只可能来自一段/五段
 
 
 ProcessPath = os.getcwd()
@@ -119,6 +111,15 @@ def convert_conjugate(input_text: str) -> str:
     Returns:
         str: The text with conjugation converted to the basic form.
     """
+    # 请注意以下4条规则指的是不含动词未活用时原型词尾假名规律
+    v1_last_letter = set("、ずよぬ")
+    v5_last_letter = set("わえおがきぎげこごしにねのばびべぼめもり")
+    adj_last_letter = set("くうす")
+    # 这些词尾假名只可能来自一段、五段的动词活用
+    v1_v5_last_letter = set("せたちてとなまられろ")
+    # 这些词尾假名只可能来自形容词、五段的动词活用
+    adj_v5_last_letter = set("かけみそ")
+
     # FIXME  不使用 global
     global process_output_list, INPUT_LAST_LETTER
     process_output_list = []  # 保留查询的结果
@@ -126,25 +127,25 @@ def convert_conjugate(input_text: str) -> str:
     INPUT_LAST_LETTER = input_text.replace("\n", "")[-1]
     process_text = input_text + "る"  # 一段动词的连用形1
     SearchInIndex(process_text)
-    if INPUT_LAST_LETTER in NeedOnceProcess_itidann:
+    if INPUT_LAST_LETTER in v1_last_letter:
         print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是一段动词")
         process_text = input_text[0:-1] + "る"
         SearchInIndex(process_text)
-    elif INPUT_LAST_LETTER in NeedOnceProcess_godann:
+    elif INPUT_LAST_LETTER in v5_last_letter:
         print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是五段动词")
         process_text = ProcessNeedOnceProcess_Godan(input_text)
         SearchInIndex(process_text)
-    elif INPUT_LAST_LETTER in NeedOnceProcess_adj:
+    elif INPUT_LAST_LETTER in adj_last_letter:
         print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是形容词")
         process_text = input_text[0:-1] + "い"
         SearchInIndex(process_text)
-    elif INPUT_LAST_LETTER in NeedTwiceProcess_adj_godann:
+    elif INPUT_LAST_LETTER in adj_v5_last_letter:
         print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是形容词，也有可能是五段动词")
         process_text = input_text[0:-1] + "い"
         SearchInIndex(process_text)
         process_text = GetGodannJiSho(input_text)
         SearchInIndex(process_text)
-    elif INPUT_LAST_LETTER in NeedTwiceProcess_itidann_godann:
+    elif INPUT_LAST_LETTER in v1_v5_last_letter:
         print(
             "词尾假名是：" + INPUT_LAST_LETTER + "有可能是一段动词，也有可能是五段动词"
         )
