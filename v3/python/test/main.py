@@ -47,28 +47,36 @@ def convert_v5(input_text: str) -> str:
 
 
 IndexTextSet = set()
-OrthographySet = set()
-OrthographyDict = dict()
+orthography_set = set()
+orthography_dict = dict()
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(CURRENT_PATH, "v3_index.txt"), "r", encoding="utf-8") as f:
     for item in f.readlines():
         item = item.replace("\n", "")
         if "\t" in item:
-            Orthography = item.split("\t")[0]
-            OrthographySet.add(Orthography)
-            IndexTextSet.add(Orthography)
-            OrthographyDict[Orthography] = item.split("\t")[1]
+            orthography = item.split("\t")[0]
+            orthography_set.add(orthography)
+            IndexTextSet.add(orthography)
+            orthography_dict[orthography] = item.split("\t")[1]
         else:
             IndexTextSet.add(item)
 
 
-def DisambiguateCompound(SearchText):
-    if SearchText in OrthographySet:
-        SearchResult = OrthographyDict.get(SearchText)
-        print(SearchResult)
-        return SearchResult
+def convert_orthography(input_text: str) -> str:
+    """convert input text to the form of a word that appears as an entry in a dictionary, for example, convert【気づく】to【気付く】
+        通过查询消除假名书写造成的非辞書型，比如【気づく】和【気付く】
+
+    Args:
+        input_text (str): _description_
+
+    Returns:
+        str: _description_
+    """
+    if input_text in orthography_set:
+        search_result = orthography_dict.get(input_text)
+        return search_result
     else:
-        return SearchText
+        return input_text
 
 
 def SearchInIndex(SearchText):
@@ -227,7 +235,7 @@ def convert_conjugate(input_text: str) -> str:
     output_list = []
     for i in process_output_list:
         if i not in output_list:
-            i = DisambiguateCompound(i)
+            i = convert_orthography(i)
             output_list.append(i)
 
     # 注意，直接使用join遇到数字时会报错，但通过剪贴板获取的数字会被转为字符串
