@@ -63,14 +63,15 @@ with open(os.path.join(CURRENT_PATH, "v3_index.txt"), "r", encoding="utf-8") as 
 
 
 def convert_orthography(input_text: str) -> str:
-    """convert input text to the form of a word that appears as an entry in a dictionary, for example, convert【気づく】to【気付く】
+    """convert input text to the form of a word that appears as an entry in a dictionary,
+        for example, convert【気づく】to【気付く】
         通过查询消除假名书写造成的非辞書型，比如【気づく】和【気付く】
 
     Args:
-        input_text (str): _description_
+        input_text (str): a form of a word that will not appear as an entry in a dictionary
 
     Returns:
-        str: _description_
+        str: the form of a word that appears as an entry in a dictionary
     """
     if input_text in orthography_set:
         search_result = orthography_dict.get(input_text)
