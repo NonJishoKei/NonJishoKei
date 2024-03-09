@@ -8,31 +8,42 @@ import time
 START_TIME = time.perf_counter()
 
 
-def GetGodannJiSho(InputText):  # 下表还可以再修改
-    GodanLastLetter = set(
+def convert_v5(input_text: str) -> str:
+    """convert a v5 verb conjugation to basic form.
+        还原五段动词的活用变形
+
+    Args:
+        input_text (str): A String containing the conjugation.
+
+    Returns:
+        str: The text with conjugation converted to the basic form.
+    """
+    v5_nonjishokei_last_letter = set(
         "えおかがきぎけげこごさしせそたちてとなにねのばびべぼまみめもらりれろわ"
     )
-    if INPUT_LAST_LETTER not in GodanLastLetter:
-        print("非五段动词变形！")
-    if INPUT_LAST_LETTER in "がぎげご":
-        GodannJiSho = InputText[0:-1] + "ぐ"
-    elif INPUT_LAST_LETTER == "と":
-        GodannJiSho = InputText[0:-1] + "つ"
-    elif INPUT_LAST_LETTER == "ば":
-        GodannJiSho = InputText[0:-1] + "ぶ"
-    elif INPUT_LAST_LETTER == "わ":
-        GodannJiSho = InputText[0:-1] + "う"
-    else:
-        Jisho_Dic = {}
-        GodanJishoLastLetter = set("うくすつぬぶむる")
-        for i in GodanJishoLastLetter:
-            Jisho_Dic[abs(ord(i) - ord(INPUT_LAST_LETTER))] = (
-                i  # 计算输入的假名与词尾原型假名之间的距离
-            )
-        GodannJiSho = InputText[0:-1] + Jisho_Dic.get(
-            min(Jisho_Dic.keys()), "无法判断该五段假名的原型"
+    if INPUT_LAST_LETTER not in v5_nonjishokei_last_letter:
+        raise ValueError(
+            f"{input_text} is not v5, you can report on github: https://github.com/NoHeartPen/NonJishoKei"
         )
-    return GodannJiSho
+    if INPUT_LAST_LETTER in "がぎげご":
+        jishokei = input_text[0:-1] + "ぐ"
+    elif INPUT_LAST_LETTER == "と":
+        jishokei = input_text[0:-1] + "つ"
+    elif INPUT_LAST_LETTER == "ば":
+        jishokei = input_text[0:-1] + "ぶ"
+    elif INPUT_LAST_LETTER == "わ":
+        jishokei = input_text[0:-1] + "う"
+    else:
+        jishokei_dic = {}
+        v5_jishokei_last_letter = set("うくすつぬぶむる")
+        # TODO fix
+        for i in v5_jishokei_last_letter:
+            # 计算输入的假名与词尾原型假名之间的距离
+            jishokei_dic[abs(ord(i) - ord(INPUT_LAST_LETTER))] = i
+        jishokei = input_text[0:-1] + jishokei_dic.get(
+            min(jishokei_dic.keys()), "无法判断该五段假名的原型"
+        )
+    return jishokei
 
 
 IndexTextSet = set()
@@ -143,7 +154,7 @@ def convert_conjugate(input_text: str) -> str:
         print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是形容词，也有可能是五段动词")
         process_text = input_text[0:-1] + "い"
         SearchInIndex(process_text)
-        process_text = GetGodannJiSho(input_text)
+        process_text = convert_v5(input_text)
         SearchInIndex(process_text)
     elif INPUT_LAST_LETTER in v1_v5_last_letter:
         print(
@@ -151,7 +162,7 @@ def convert_conjugate(input_text: str) -> str:
         )
         process_text = input_text[0:-1] + "る"
         SearchInIndex(process_text)
-        process_text = GetGodannJiSho(input_text)
+        process_text = convert_v5(input_text)
         SearchInIndex(process_text)
     elif INPUT_LAST_LETTER == "っ":
         print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是五段动词")
