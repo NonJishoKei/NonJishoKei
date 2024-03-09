@@ -1,10 +1,9 @@
+"""convert a nonjishokei to a jishokei"""
+
 import os
 import re
 import time
 
-"""
-返回所有查询结果
-"""
 START_TIME = time.perf_counter()
 
 
@@ -23,7 +22,7 @@ def convert_v5(input_text: str) -> str:
     )
     if INPUT_LAST_LETTER not in v5_nonjishokei_last_letter:
         raise ValueError(
-            f"""{input_text} is not v5, 
+            f"""{input_text} is not v5,
             you can report on github: https://github.com/NoHeartPen/NonJishoKei"""
         )
     if INPUT_LAST_LETTER in "がぎげご":
