@@ -46,7 +46,7 @@ def convert_v5(input_text: str) -> str:
     return jishokei
 
 
-IndexTextSet = set()
+index_set = set()
 orthography_set = set()
 orthography_dict = dict()
 CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -56,10 +56,10 @@ with open(os.path.join(CURRENT_PATH, "v3_index.txt"), "r", encoding="utf-8") as 
         if "\t" in item:
             orthography = item.split("\t")[0]
             orthography_set.add(orthography)
-            IndexTextSet.add(orthography)
+            index_set.add(orthography)
             orthography_dict[orthography] = item.split("\t")[1]
         else:
-            IndexTextSet.add(item)
+            index_set.add(item)
 
 
 def convert_orthography(input_text: str) -> str:
@@ -80,14 +80,25 @@ def convert_orthography(input_text: str) -> str:
         return input_text
 
 
-def SearchInIndex(SearchText):
-    print("尝试在索引中查找" + SearchText)
-    if SearchText in IndexTextSet:
+def search_index(input_text: str) -> str:
+    """confirm whether the derivation results are correct by querying.
+        通过查询确认推导结果是否正确
+
+    Args:
+        input_text (str): the results deduced by the program are not necessarily real words.
+
+    Returns:
+        str: a word that appears as an entry in a dictionary
+    """
+    # TODO 与 convert_orthography 函数合并
+    if input_text in index_set:
+        # TODO not use global
         global SearchResult
-        SearchResult = SearchText
+        SearchResult = input_text
         process_output_list.append(SearchResult)
         return SearchResult
     else:
+        # TODO this looks like a bug
         SearchResult = INPUT_TEXT + "无该索引"
         return False
 
@@ -143,47 +154,47 @@ def convert_conjugate(input_text: str) -> str:
     # FIXME  不使用 global
     global process_output_list, INPUT_LAST_LETTER
     process_output_list = []  # 保留查询的结果
-    SearchInIndex(input_text)  # 查看是否收录在词典中
+    search_index(input_text)  # 查看是否收录在词典中
     INPUT_LAST_LETTER = input_text.replace("\n", "")[-1]
     process_text = input_text + "る"  # 一段动词的连用形1
-    SearchInIndex(process_text)
+    search_index(process_text)
     if INPUT_LAST_LETTER in v1_last_letter:
         print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是一段动词")
         process_text = input_text[0:-1] + "る"
-        SearchInIndex(process_text)
+        search_index(process_text)
     elif INPUT_LAST_LETTER in v5_last_letter:
         print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是五段动词")
         process_text = ProcessNeedOnceProcess_Godan(input_text)
-        SearchInIndex(process_text)
+        search_index(process_text)
     elif INPUT_LAST_LETTER in adj_last_letter:
         print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是形容词")
         process_text = input_text[0:-1] + "い"
-        SearchInIndex(process_text)
+        search_index(process_text)
     elif INPUT_LAST_LETTER in adj_v5_last_letter:
         print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是形容词，也有可能是五段动词")
         process_text = input_text[0:-1] + "い"
-        SearchInIndex(process_text)
+        search_index(process_text)
         process_text = convert_v5(input_text)
-        SearchInIndex(process_text)
+        search_index(process_text)
     elif INPUT_LAST_LETTER in v1_v5_last_letter:
         print(
             "词尾假名是：" + INPUT_LAST_LETTER + "有可能是一段动词，也有可能是五段动词"
         )
         process_text = input_text[0:-1] + "る"
-        SearchInIndex(process_text)
+        search_index(process_text)
         process_text = convert_v5(input_text)
-        SearchInIndex(process_text)
+        search_index(process_text)
     elif INPUT_LAST_LETTER == "っ":
         print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是五段动词")
         process_text = input_text[0:-1] + "る"
-        SearchInIndex(process_text)
+        search_index(process_text)
         process_text = input_text[0:-1] + "つ"
-        SearchInIndex(process_text)
+        search_index(process_text)
         process_text = input_text[0:-1] + "う"
-        SearchInIndex(process_text)
+        search_index(process_text)
         if input_text == "行っ":
             process_output_list.append("行く")
-            SearchInIndex(process_text)
+            search_index(process_text)
             process_output_list.append(input_text)
     elif INPUT_LAST_LETTER == "さ":
         print(
@@ -192,25 +203,25 @@ def convert_conjugate(input_text: str) -> str:
             + "有可能是形容词，也有可能是五段动词，也有可能是一段动词"
         )
         process_text = input_text[0:-1] + "い"
-        SearchInIndex(process_text)
+        search_index(process_text)
         process_text = input_text[0:-1] + "す"
-        SearchInIndex(process_text)
+        search_index(process_text)
         process_text = input_text[0:-1] + input_text[-1].replace(
             INPUT_LAST_LETTER, "る"
         )
-        SearchInIndex(process_text)
+        search_index(process_text)
     elif INPUT_LAST_LETTER == "ん":
         print(
             "词尾假名是：" + INPUT_LAST_LETTER + "有可能是一段动词，也有可能是五段动词"
         )
         process_text = input_text[0:-1] + "む"
-        SearchInIndex(process_text)
+        search_index(process_text)
         process_text = input_text[0:-1] + "ぶ"
-        SearchInIndex(process_text)
+        search_index(process_text)
         process_text = input_text[0:-1] + "ぬ"
-        SearchInIndex(process_text)
+        search_index(process_text)
         process_text = input_text[0:-1] + "る"
-        SearchInIndex(process_text)
+        search_index(process_text)
     elif INPUT_LAST_LETTER == "い":
         print(
             "词尾假名是："
@@ -218,15 +229,15 @@ def convert_conjugate(input_text: str) -> str:
             + "有可能是五段动词活用，也有可能是辞書形"
         )
         process_text = input_text[0:-1] + "う"
-        SearchInIndex(process_text)
+        search_index(process_text)
         process_text = input_text[0:-1] + "く"
-        SearchInIndex(process_text)
+        search_index(process_text)
         process_text = input_text[0:-1] + "ぐ"
-        SearchInIndex(process_text)
+        search_index(process_text)
     elif INPUT_LAST_LETTER == "ゃ":
         print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是一段动词")
         process_text = input_text[0:-2] + "る"
-        SearchInIndex(process_text)
+        search_index(process_text)
     else:
         print("词尾假名出现例外情况！" + input_text)
         process_output_list.append(input_text)
