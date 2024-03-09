@@ -23,7 +23,8 @@ def convert_v5(input_text: str) -> str:
     )
     if INPUT_LAST_LETTER not in v5_nonjishokei_last_letter:
         raise ValueError(
-            f"{input_text} is not v5, you can report on github: https://github.com/NoHeartPen/NonJishoKei"
+            f"""{input_text} is not v5, 
+            you can report on github: https://github.com/NoHeartPen/NonJishoKei"""
         )
     if INPUT_LAST_LETTER in "がぎげご":
         jishokei = input_text[0:-1] + "ぐ"
@@ -103,30 +104,43 @@ def search_index(input_text: str) -> str:
         return False
 
 
-def ProcessNeedOnceProcess_Godan(
-    InputText,
-):  # 请确保是五段动词活用可能出现的词尾再调用该函数
+def convert_v5_need_once(input_text: str) -> str:
+    """convert input text that can only come from a v5 verb
+        还原只可能来自一个五段动词的动词活用的词尾假名
+
+    Args:
+        input_text (str): A String containing the conjugation.
+
+    Raises:
+        ValueError: the input text cannot be converted by this function,
+        you can only use this function under the condition of v5_last_letter.
+
+    Returns:
+        str: The text with conjugation converted to the basic form.
+    """
     if INPUT_LAST_LETTER in "わえお":
-        ProcessResult = InputText[0:-1] + "う"
+        process_result = input_text[0:-1] + "う"
     elif INPUT_LAST_LETTER in "かきけこ":
-        ProcessResult = InputText[0:-1] + "く"
+        process_result = input_text[0:-1] + "く"
     elif INPUT_LAST_LETTER in "がぎげご":
-        ProcessResult = InputText[0:-1] + "ぐ"
+        process_result = input_text[0:-1] + "ぐ"
     elif INPUT_LAST_LETTER in "しせ":
-        ProcessResult = InputText[0:-1] + "す"
+        process_result = input_text[0:-1] + "す"
     elif INPUT_LAST_LETTER in "にねの":
-        ProcessResult = InputText[0:-1] + "ぬ"
+        process_result = input_text[0:-1] + "ぬ"
     elif INPUT_LAST_LETTER in "ばびべぼ":
-        ProcessResult = InputText[0:-1] + "ぶ"
+        process_result = input_text[0:-1] + "ぶ"
     elif INPUT_LAST_LETTER in "めも":
-        ProcessResult = InputText[0:-1] + "む"
+        process_result = input_text[0:-1] + "む"
     elif INPUT_LAST_LETTER in "り":
-        ProcessResult = InputText[0:-1] + "る"
+        process_result = input_text[0:-1] + "る"
     else:
-        # 抛出异常，不应该调用这个方法
-        ProcessResult = InputText
-        print(ProcessResult + "ProcessNeedOnceProcess_Godan异常")
-    return ProcessResult
+        process_result = input_text
+        raise ValueError(
+            f"""{input_text} shouldn't converted by this function,
+            you can report on github: https://github.com/NoHeartPen/NonJishoKei"""
+        )
+    return process_result
 
 
 ProcessPath = os.getcwd()
@@ -164,7 +178,7 @@ def convert_conjugate(input_text: str) -> str:
         search_index(process_text)
     elif INPUT_LAST_LETTER in v5_last_letter:
         print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是五段动词")
-        process_text = ProcessNeedOnceProcess_Godan(input_text)
+        process_text = convert_v5_need_once(input_text)
         search_index(process_text)
     elif INPUT_LAST_LETTER in adj_last_letter:
         print("词尾假名是：" + INPUT_LAST_LETTER + "有可能是形容词")
