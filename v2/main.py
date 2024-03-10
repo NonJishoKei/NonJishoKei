@@ -5,16 +5,23 @@ ProessPath = os.getcwd()
 # 切换到当前文件所在的路径ß
 os.chdir(ProessPath)
 
-CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
-with open(
-    os.path.join(CURRENT_PATH, r"index/index.txt"), "r", encoding="utf-8"
-) as InputFile:
-    IndexGroup = set()  # 用户自定义的词典索引，防止出现跳转后为空的情况
-    for line in InputFile:
-        if (
-            "【" not in line
-        ):  # 跳过类似たべる【食べる】的词条，日语电子词典通常使用这种词条保存释义
-            IndexGroup.add(line.replace("\n", ""))
+INDEX_SET = set()
+
+
+def init_index_file(index_file: str):
+    """Load user-defined dictionary index to prevent it from being empty after the jump
+        加载用户自定义的词典索引，防止出现跳转后为空的情况
+
+    Args:
+        index_file (str): user-defined dictionary index file path
+    """
+    with open(index_file, "r", encoding="utf-8") as f:
+        for line in f:
+            # Skip entries similar to たべる【食べる】,
+            # which are usually used in Japanese electronic dictionaries to save meanings
+            # 跳过类似たべる【食べる】的词条，日语电子词典通常使用这种词条保存释义
+            if "【" not in line:
+                INDEX_SET.add(line.replace("\n", ""))
 
 
 def InflectAdj():
@@ -26,7 +33,7 @@ def InflectAdj():
             if line != "":
                 varriant = line.split("\t")[0]
                 jishokei = line.split("\t")[1]
-                if jishokei in IndexGroup:
+                if jishokei in INDEX_SET:
                     dichtml = (
                         r'<section class="description"><a href="entry://'
                         + jishokei
@@ -35,7 +42,7 @@ def InflectAdj():
                         + "</a>\n</section>\n</>"
                         + "\n"
                     )
-                    if varriant not in IndexGroup:
+                    if varriant not in INDEX_SET:
                         OutputFile.write(
                             varriant + "\n" + dichtml
                         )  # 忽略词典中已收录的非辞書形
@@ -104,7 +111,7 @@ def InflectSahenn():
             if line != "":
                 varriant = line.split("\t")[0]
                 jishokei = line.split("\t")[1]
-                if jishokei in IndexGroup:
+                if jishokei in INDEX_SET:
                     dichtml = (
                         r'<section class="description"><a href="entry://'
                         + jishokei
@@ -113,7 +120,7 @@ def InflectSahenn():
                         + "</a>\n</section>\n</>"
                         + "\n"
                     )
-                    if varriant not in IndexGroup:
+                    if varriant not in INDEX_SET:
                         OutputFile.write(
                             varriant + "\n" + dichtml
                         )  # 忽略词典中已收录的非辞書形
@@ -259,7 +266,7 @@ def InflectGodan():
             if line != "":
                 varriant = line.split("\t")[0]
                 jishokei = line.split("\t")[1]
-                if jishokei in IndexGroup:
+                if jishokei in INDEX_SET:
                     kana = varriant[-1]  # 请注意，这种方法要求文件以空行结尾
                     dichtml = (
                         r'<section class="description"><a href="entry://'
@@ -269,7 +276,7 @@ def InflectGodan():
                         + "</a>\n</section>\n</>"
                         + "\n"
                     )
-                    if varriant not in IndexGroup:
+                    if varriant not in INDEX_SET:
                         OutputFile.write(
                             varriant + "\n" + dichtml
                         )  # 忽略词典中已收录的非辞書形
@@ -538,7 +545,7 @@ def InflectItidan():
             if line != "":
                 varriant = line.split("\t")[0]
                 jishokei = line.split("\t")[1]
-                if jishokei in IndexGroup:
+                if jishokei in INDEX_SET:
                     dichtml = (
                         r'<section class="description"><a href="entry://'
                         + jishokei
@@ -547,7 +554,7 @@ def InflectItidan():
                         + "</a>\n</section>\n</>"
                         + "\n"
                     )
-                    if varriant not in IndexGroup:
+                    if varriant not in INDEX_SET:
                         OutputFile.write(
                             varriant + "\n" + dichtml
                         )  # 忽略词典中已收录的非辞書形
@@ -672,7 +679,7 @@ def InflectNoun():
             if line != "":
                 varriant = line.split("\t")[0]
                 jishokei = line.split("\t")[1]
-                if jishokei in IndexGroup:
+                if jishokei in INDEX_SET:
                     dichtml = (
                         r'<section class="description"><a href="entry://'
                         + jishokei
@@ -681,7 +688,7 @@ def InflectNoun():
                         + "</a>\n</section>\n</>"
                         + "\n"
                     )
-                    if varriant not in IndexGroup:
+                    if varriant not in INDEX_SET:
                         # 忽略词典中已收录的非辞書形
                         OutputFile.write(varriant + "\n" + dichtml)
                 else:
@@ -741,5 +748,7 @@ def PackProcess():
     os.remove(ReleasePackFile)
 
 
+CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
+init_index_file(os.path.join(CURRENT_PATH, r"index/index.txt"))
 InflectProcess()
 PackProcess()
