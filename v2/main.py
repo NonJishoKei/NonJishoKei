@@ -2,17 +2,24 @@ import os
 import re
 
 ProessPath = os.getcwd()
+# 切换到当前文件所在的路径ß
+os.chdir(ProessPath)
 
-with open(r"index\index.txt", "r", encoding="utf-8") as InputFile:
+CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
+with open(
+    os.path.join(CURRENT_PATH, r"index/index.txt"), "r", encoding="utf-8"
+) as InputFile:
     IndexGroup = set()  # 用户自定义的词典索引，防止出现跳转后为空的情况
     for line in InputFile:
-        if "【" not in line:  # 跳过类似たべる【食べる】的词条，日语电子词典通常使用这种词条保存释义
+        if (
+            "【" not in line
+        ):  # 跳过类似たべる【食べる】的词条，日语电子词典通常使用这种词条保存释义
             IndexGroup.add(line.replace("\n", ""))
 
 
 def InflectAdj():
-    with open(r"index\adj.txt", "r", encoding="utf-8") as InputFile, open(
-        r"process\adj.txt", "w", encoding="utf-8"
+    with open(r"index/adj.txt", "r", encoding="utf-8") as InputFile, open(
+        r"process/adj.txt", "w", encoding="utf-8"
     ) as OutputFile:
         for line in InputFile:
             line = line.replace("\n", "")
@@ -29,31 +36,49 @@ def InflectAdj():
                         + "\n"
                     )
                     if varriant not in IndexGroup:
-                        OutputFile.write(varriant + "\n" + dichtml)  # 忽略词典中已收录的非辞書形
+                        OutputFile.write(
+                            varriant + "\n" + dichtml
+                        )  # 忽略词典中已收录的非辞書形
                     # 处理变形
                     line_1 = (
-                        varriant[0:-1] + varriant[-1].replace("い", "け" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("い", "け" + "\n")
+                        + dichtml
                     )
                     line_2 = (
-                        varriant[0:-1] + varriant[-1].replace("い", "か" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("い", "か" + "\n")
+                        + dichtml
                     )
                     line_3 = (
-                        varriant[0:-1] + varriant[-1].replace("い", "く" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("い", "く" + "\n")
+                        + dichtml
                     )
                     line_4 = (
-                        varriant[0:-1] + varriant[-1].replace("い", "う" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("い", "う" + "\n")
+                        + dichtml
                     )
                     line_5 = (
-                        varriant[0:-1] + varriant[-1].replace("い", "さ" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("い", "さ" + "\n")
+                        + dichtml
                     )
                     line_6 = (
-                        varriant[0:-1] + varriant[-1].replace("い", "み" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("い", "み" + "\n")
+                        + dichtml
                     )  # 部分形容词
                     line_7 = (
-                        varriant[0:-1] + varriant[-1].replace("い", "そ" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("い", "そ" + "\n")
+                        + dichtml
                     )  # そうだ
                     line_8 = (
-                        varriant[0:-1] + varriant[-1].replace("い", "す" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("い", "す" + "\n")
+                        + dichtml
                     )  # すぎる
                     OutputFile.write(
                         line_1
@@ -71,8 +96,8 @@ def InflectAdj():
 
 
 def InflectSahenn():
-    with open(r"index\sahenn.txt", "r", encoding="utf-8") as InputFile, open(
-        r"process\sahenn.txt", "w", encoding="utf-8"
+    with open(r"index/sahenn.txt", "r", encoding="utf-8") as InputFile, open(
+        r"process/sahenn.txt", "w", encoding="utf-8"
     ) as OutputFile:
         for line in InputFile:
             line = line.replace("\n", "")
@@ -89,7 +114,9 @@ def InflectSahenn():
                         + "\n"
                     )
                     if varriant not in IndexGroup:
-                        OutputFile.write(varriant + "\n" + dichtml)  # 忽略词典中已收录的非辞書形
+                        OutputFile.write(
+                            varriant + "\n" + dichtml
+                        )  # 忽略词典中已收录的非辞書形
                         # 处理变形
                     if "する" in varriant:
                         line_1 = (
@@ -204,8 +231,8 @@ def Hiragana2Katakana(hiragara_word):
 
 
 def InflectHiragana():
-    with open(r"index\hiragrana.txt", "r", encoding="utf-8") as InputFile, open(
-        r"process\hiragrana.txt", "w", encoding="utf-8"
+    with open(r"index/hiragrana.txt", "r", encoding="utf-8") as InputFile, open(
+        r"process/hiragrana.txt", "w", encoding="utf-8"
     ) as OutputFile:
         for line in InputFile:
             line = line.replace("\n", "")
@@ -224,8 +251,8 @@ def InflectHiragana():
 
 
 def InflectGodan():
-    with open(r"index\godann.txt", "r", encoding="utf-8") as InputFile, open(
-        r"process\godann.txt", "w", encoding="utf-8"
+    with open(r"index/godann.txt", "r", encoding="utf-8") as InputFile, open(
+        r"process/godann.txt", "w", encoding="utf-8"
     ) as OutputFile:
         for line in InputFile:
             line = line.replace("\n", "")
@@ -243,7 +270,9 @@ def InflectGodan():
                         + "\n"
                     )
                     if varriant not in IndexGroup:
-                        OutputFile.write(varriant + "\n" + dichtml)  # 忽略词典中已收录的非辞書形
+                        OutputFile.write(
+                            varriant + "\n" + dichtml
+                        )  # 忽略词典中已收录的非辞書形
                     # 处理变形
                     if kana == "う":
                         line_1 = (
@@ -349,7 +378,9 @@ def InflectGodan():
                         )
                         OutputFile.write(line_1 + line_2 + line_3 + line_4)
                     elif kana == "ず":
-                        print("五段动词词尾异常" + line)  # 现代日语中没有五段动词以这个假名结尾
+                        print(
+                            "五段动词词尾异常" + line
+                        )  # 现代日语中没有五段动词以这个假名结尾
                     elif kana == "つ":
                         line_1 = (
                             varriant[0:-1]
@@ -499,8 +530,8 @@ def InflectGodan():
 
 
 def InflectItidan():
-    with open(r"index\itidann.txt", "r", encoding="utf-8") as InputFile, open(
-        r"process\itidann.txt", "w", encoding="utf-8"
+    with open(r"index/itidann.txt", "r", encoding="utf-8") as InputFile, open(
+        r"process/itidann.txt", "w", encoding="utf-8"
     ) as OutputFile:
         for line in InputFile:
             line = line.replace("\n", "")
@@ -517,53 +548,85 @@ def InflectItidan():
                         + "\n"
                     )
                     if varriant not in IndexGroup:
-                        OutputFile.write(varriant + "\n" + dichtml)  # 忽略词典中已收录的非辞書形
+                        OutputFile.write(
+                            varriant + "\n" + dichtml
+                        )  # 忽略词典中已收录的非辞書形
                     # 处理变形
                     line_1 = (
-                        varriant[0:-1] + varriant[-1].replace("る", "ろ" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("る", "ろ" + "\n")
+                        + dichtml
                     )
                     line_2 = (
-                        varriant[0:-1] + varriant[-1].replace("る", "よ" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("る", "よ" + "\n")
+                        + dichtml
                     )
                     line_3 = (
-                        varriant[0:-1] + varriant[-1].replace("る", "な" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("る", "な" + "\n")
+                        + dichtml
                     )  # ながら
                     line_4 = (
-                        varriant[0:-1] + varriant[-1].replace("る", "ま" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("る", "ま" + "\n")
+                        + dichtml
                     )  # ます
                     line_5 = (
-                        varriant[0:-1] + varriant[-1].replace("る", "た" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("る", "た" + "\n")
+                        + dichtml
                     )  # た
                     line_6 = (
-                        varriant[0:-1] + varriant[-1].replace("る", "れ" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("る", "れ" + "\n")
+                        + dichtml
                     )  # 假定れば
                     line_7 = (
-                        varriant[0:-1] + varriant[-1].replace("る", "て" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("る", "て" + "\n")
+                        + dichtml
                     )  # ている
                     line_8 = (
-                        varriant[0:-1] + varriant[-1].replace("る", "ら" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("る", "ら" + "\n")
+                        + dichtml
                     )  # られる
                     line_9 = (
-                        varriant[0:-1] + varriant[-1].replace("る", "さ" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("る", "さ" + "\n")
+                        + dichtml
                     )  # 使役态
                     line_10 = (
-                        varriant[0:-1] + varriant[-1].replace("る", "ず" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("る", "ず" + "\n")
+                        + dichtml
                     )  # 古语否定，现代残留
                     line_11 = (
-                        varriant[0:-1] + varriant[-1].replace("る", "ぬ" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("る", "ぬ" + "\n")
+                        + dichtml
                     )  # 古语否定，现代残留
                     line_12 = (
-                        varriant[0:-1] + varriant[-1].replace("る", "、" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("る", "、" + "\n")
+                        + dichtml
                     )
                     line_13 = varriant[0:-1] + "\n" + dichtml  # 单独查询复合词
                     line_14 = (
-                        varriant[0:-1] + varriant[-1].replace("る", "ん" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("る", "ん" + "\n")
+                        + dichtml
                     )  # 口语否定
                     line_15 = (
-                        varriant[0:-1] + varriant[-1].replace("る", "と" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("る", "と" + "\n")
+                        + dichtml
                     )  # 口语ておく
                     line_16 = (
-                        varriant[0:-1] + varriant[-1].replace("る", "ち" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("る", "ち" + "\n")
+                        + dichtml
                     )  # 口语 てしまう
                     line_17 = (
                         varriant[0:-1]
@@ -571,7 +634,9 @@ def InflectItidan():
                         + dichtml
                     )  # 同上，划词
                     line_18 = (
-                        varriant[0:-1] + varriant[-1].replace("る", "せ" + "\n") + dichtml
+                        varriant[0:-1]
+                        + varriant[-1].replace("る", "せ" + "\n")
+                        + dichtml
                     )  # させる约音
                     OutputFile.write(
                         line_1
