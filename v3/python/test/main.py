@@ -459,22 +459,34 @@ def del_ocr_error(input_text: str) -> str:
     return output_text
 
 
-INPUT_TEXT = "歩く"
+def preprocess(input_text: str) -> str:
+    """Preprocess the input text.
+        预处理输入文本
 
-# 预处理
-INPUT_TEXT = del_ocr_error(INPUT_TEXT)
-if "(" in INPUT_TEXT:  # 删除Word等使用的注音假名，注意是半角()
-    INPUT_TEXT = del_word_ruby(INPUT_TEXT)
-if re.search(r"^[\u30a0-\u30ff]*?$", INPUT_TEXT) is not None:  # 转换片假名书写的单词
-    INPUT_TEXT = convert_kata_to_hira(INPUT_TEXT)
-if re.search(r"(\w{1})(々|〻|ゝ|ヽ)", INPUT_TEXT) is not None:
-    INPUT_TEXT = convert_repe_single_sign(INPUT_TEXT)
-if re.search(r"^(.*?)(\w{1})(ヾ|ゞ)(.*?)$", INPUT_TEXT) is not None:
-    INPUT_TEXT = convert_repe_single_daku_sign(INPUT_TEXT)
-if re.search(r"^(\w{2})(〳〵|／＼)(.*?)$", INPUT_TEXT) is not None:
-    INPUT_TEXT = convert_repe_double_sign(INPUT_TEXT)
-if re.search(r"^(.*?)(〴〵|／″＼)(.*?)$", INPUT_TEXT) is not None:
-    INPUT_TEXT = convert_repe_double_daku_sign(INPUT_TEXT)
+    Args:
+        input_text (str): The input text.
+
+    Returns:
+        str: The processed text.
+    """
+    input_text = del_ocr_error(input_text)
+    if "(" in input_text:
+        input_text = del_word_ruby(input_text)
+    # 转换片假名书写的单词
+    if re.search(r"^[\u30a0-\u30ff]*?$", INPUT_TEXT) is not None:
+        input_text = convert_kata_to_hira(input_text)
+    if re.search(r"(\w{1})(々|〻|ゝ|ヽ)", input_text) is not None:
+        input_text = convert_repe_single_sign(input_text)
+    if re.search(r"^(.*?)(\w{1})(ヾ|ゞ)(.*?)$", input_text) is not None:
+        input_text = convert_repe_single_daku_sign(input_text)
+    if re.search(r"^(\w{2})(〳〵|／＼)(.*?)$", input_text) is not None:
+        input_text = convert_repe_double_sign(input_text)
+    if re.search(r"^(.*?)(〴〵|／″＼)(.*?)$", input_text) is not None:
+        input_text = convert_repe_double_daku_sign(input_text)
+    return input_text
+
+
+INPUT_TEXT = "歩く"
 
 
 OUTPUT_TEXT = convert_conjugate(INPUT_TEXT)
