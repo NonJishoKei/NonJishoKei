@@ -303,14 +303,7 @@ def convert_conjugate(input_text: str) -> list:
     output_list: List[str] = []
     for i in process_output_list:
         if i not in output_list:
-            orthography_text = convert_orthography(i)
-            if orthography_text is not None:
-                output_list.extend(set(orthography_text))
-
-    # 将输入的字符串作为最后一个结果返回
-    # 方便用户在程序无法推导出正确结果时手动编辑
-    if input_text not in output_list:
-        output_list.append(input_text)
+            output_list.append(i)
 
     return output_list
 
@@ -325,7 +318,17 @@ def convert_nonjishokei(input_text: str) -> list:
     Returns:
         list:The list with nonjishokei converted to the jishokei.
     """
-    output_list = convert_conjugate(input_text)
+    # 还原动词的活用变形
+    converted_conjugate_list = convert_conjugate(input_text)
+    # 检查还原结果
+    orthography_list: list[str] = []
+    for i in converted_conjugate_list:
+        orthography_text = convert_orthography(i)
+        if orthography_text is not None:
+            orthography_list.extend(set(orthography_text))
+    output_list = []
+    for i in orthography_list:
+        output_list.append(i)
     return output_list
 
 
@@ -362,9 +365,7 @@ def scan_input_string(input_text: str) -> list:
 
         scan_output_text = convert_nonjishokei(scanned_input_text)
         for i in scan_output_text:
-            # 删除字典中不存在索引的结果
-            if orthography_dict.get(i) is not None:
-                scan_process_list.append(i)
+            scan_process_list.append(i)
 
     # 返回给用户的扫描结果
     scan_output_list: List[str] = []
