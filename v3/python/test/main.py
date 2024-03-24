@@ -1,21 +1,15 @@
 """convert a nonjishokei to a jishokei"""
 
-import os
 import json
+import os
 from typing import Dict, List
 
 from preprocess import preprocess
 
 
-orthography_dict: Dict[str, list[str]] = dict()
-CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
-
-with open(os.path.join(CURRENT_PATH, "index_v3.json"), "r", encoding="utf-8") as f:
-    orthography_dict = json.loads(f.read())
-
-
-def read_json_file(input_file: str) -> Dict[str, list[str]]:
+def read_rule_file(rule_file: str) -> Dict[str, list[str]]:
     """read json file
+        加载规则文件
 
     Args:
         input_file (str): input file path
@@ -23,12 +17,16 @@ def read_json_file(input_file: str) -> Dict[str, list[str]]:
     Returns:
         dict: json file content
     """
-    with open(input_file, "r", encoding="utf-8") as f:
+    with open(rule_file, "r", encoding="utf-8") as f:
         return json.loads(f.read())
 
 
+CURRENT_PATH = os.path.dirname(os.path.abspath(__file__))
+
+orthography_rule_path: str = os.path.join(CURRENT_PATH, "index_v3.json")
+orthography_rule_dict: Dict[str, list[str]] = read_rule_file(orthography_rule_path)
 conjugate_rule_path: str = os.path.join(CURRENT_PATH, "conjugate_rule.json")
-conjugate_rule_dict: Dict[str, list[str]] = read_json_file(conjugate_rule_path)
+conjugate_rule_dict: Dict[str, list[str]] = read_rule_file(conjugate_rule_path)
 
 
 def convert_orthography(input_text: str) -> list | None:
@@ -42,8 +40,8 @@ def convert_orthography(input_text: str) -> list | None:
     Returns:
         str: the form of a word that appears as an entry in a dictionary
     """
-    if input_text in orthography_dict:
-        return orthography_dict[input_text]
+    if input_text in orthography_rule_dict:
+        return orthography_rule_dict[input_text]
     else:
         return None
 
@@ -133,7 +131,7 @@ def scan_input_string(input_text: str) -> list:
         scanned_input_list.append(scanned_input_text)
 
         # 特殊规则
-        special_output_text = orthography_dict.get(scanned_input_text)
+        special_output_text = orthography_rule_dict.get(scanned_input_text)
         if special_output_text is not None:
             for i in special_output_text:
                 scan_process_list.append(i)
