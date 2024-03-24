@@ -5,6 +5,8 @@ import json
 from typing import Dict, List
 from textwrap import dedent
 
+from preprocess import preprocess
+
 
 def convert_v5(input_text: str, input_stem: str, input_last_letter: str) -> str:
     """convert a v5 verb conjugation to basic form.
@@ -311,3 +313,72 @@ def convert_conjugate(input_text: str) -> list:
         output_list.append(input_text)
 
     return output_list
+
+
+def convert_nonjishokei(input_text: str) -> list:
+    """Convert nonjishokei to jishokei.
+        将非辞书形还原为辞书形
+
+    Args:
+        input_text (str): A String containing the nonjishokei.
+
+    Returns:
+        list:The list with nonjishokei converted to the jishokei.
+    """
+    output_list = convert_conjugate(input_text)
+    return output_list
+
+
+def scan_input_string(input_text: str) -> list:
+    """Scans the input string by Maximum Matching and returns a list of possible jishokei.
+        采用最长一致法扫描字符串，推导并返回所有可能的辞书形
+
+    Args:
+        input_text (str): The string to scan.
+        output_max_length (int, optional): The maximum length of the returned results.
+
+    Returns:
+        list: A list of converted jishokei.
+    """
+
+    # 预处理
+    input_text = preprocess(input_text)
+
+    # 记录扫描的临时字符串
+    scanned_input_list = []
+    # 记录扫描过程中的推导结果
+    scan_process_list = []
+    for input_index in range(len(input_text) + 1):
+        scanned_input_text = input_text[0 : input_index + 1]
+        scanned_input_list.append(scanned_input_text)
+
+        # 特殊规则
+        special_output_text = orthography_dict.get(scanned_input_text)
+        if special_output_text is not None:
+            for i in special_output_text:
+                scan_process_list.append(i)
+
+        # TODO 用户自定义的转换规则
+
+        scan_output_text = convert_nonjishokei(scanned_input_text)
+        for i in scan_output_text:
+            # 删除字典中不存在索引的结果
+            if orthography_dict.get(i) is not None:
+                scan_process_list.append(i)
+
+    # 返回给用户的扫描结果
+    scan_output_list: List[str] = []
+    # 优先展示更长字符串的扫描结果，提高复合动词的使用体验
+    for i in reversed(scan_process_list):
+        # 只添加第一次的推导结果
+        if i not in scan_output_list:
+            # 不添加扫描过程中的临时字符串
+            if i not in scanned_input_list:
+                scan_output_list.append(i)
+
+    # 将输入的字符串作为最后一个结果返回
+    # 方便用户在程序无法推导出正确结果时快速编辑
+    if input_text not in scan_output_list:
+        scan_output_list.append(input_text)
+
+    return scan_output_list
