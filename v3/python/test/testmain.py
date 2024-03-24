@@ -120,7 +120,7 @@ class TestMain(unittest.TestCase):
         # 「食べんの？」は、普通は「食べるの？」の「る」が「ん」になったものですが、関西の方言などで「食べないの？」という意味になることもあります
         self.assertIn("食べる", scan_input_string("食べんの？"))
 
-        #
+        # 複合動詞
         self.assertIn("食べる", scan_input_string("食べ始める"))
         # これ美味しそうですねえ。　 食べに行きたいなあ。
         # http://ameblo.jp/closdesoleil/entry-11091942958.html
@@ -128,7 +128,7 @@ class TestMain(unittest.TestCase):
 
         self.assertIn("教える", scan_input_string("教えざるを得ない"))
 
-        # カ行五段动词还原测试
+        # カ行五段动词
         # 書か-ない/ず/ぬ/れる/せる/せられる/される
         self.assertIn("書く", scan_input_string("書かない"))
         self.assertIn("書く", scan_input_string("書かず"))
