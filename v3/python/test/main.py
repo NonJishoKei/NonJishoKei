@@ -27,6 +27,8 @@ orthography_rule_path: str = os.path.join(CURRENT_PATH, "index_v3.json")
 orthography_rule_dict: Dict[str, list[str]] = read_rule_file(orthography_rule_path)
 conjugate_rule_path: str = os.path.join(CURRENT_PATH, "conjugate_rule.json")
 conjugate_rule_dict: Dict[str, list[str]] = read_rule_file(conjugate_rule_path)
+special_rule_path: str = os.path.join(CURRENT_PATH, "special_rule.json")
+special_rule_dict: Dict[str, list[str]] = read_rule_file(special_rule_path)
 
 
 def convert_orthography(input_text: str) -> list | None:
@@ -131,7 +133,7 @@ def scan_input_string(input_text: str) -> list:
         scanned_input_list.append(scanned_input_text)
 
         # 特殊规则
-        special_output_text = orthography_rule_dict.get(scanned_input_text)
+        special_output_text = special_rule_dict.get(scanned_input_text)
         if special_output_text is not None:
             for i in special_output_text:
                 scan_process_list.append(i)
