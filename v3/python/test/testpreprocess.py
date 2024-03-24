@@ -1,14 +1,17 @@
 """单元测试框架 """
 
 import unittest
+from textwrap import dedent
+
 from preprocess import (
-    del_word_ruby,
+    convert_half_full_width,
     convert_kata_to_hira,
-    convert_repe_single_sign,
-    convert_repe_single_daku_sign,
-    convert_repe_double_sign,
     convert_repe_double_daku_sign,
+    convert_repe_double_sign,
+    convert_repe_single_daku_sign,
+    convert_repe_single_sign,
     del_ocr_error,
+    del_word_ruby,
 )
 
 
@@ -127,6 +130,20 @@ class TestMain(unittest.TestCase):
         self.assertEqual("食べた", del_ocr_error(" 食べた "))
         self.assertEqual("食べた", del_ocr_error(" 食 べ た "))
         self.assertEqual("", del_ocr_error(" "))
+
+    def test_convert_half_full_width(self):
+        """半角转全角"""
+        half_width_text = (
+            "ｧｱｨｲｩｳｪｴｫｵｶｶﾞｷｷﾞｸｸﾞｹｹﾞｺｺﾞｻｻﾞｼｼﾞｽｽﾞｾｾﾞｿｿﾞ"
+            "ﾀﾀﾞﾁﾁﾞｯﾂﾂﾞﾃﾃﾞﾄﾄﾞﾅﾆﾇﾈﾉﾊﾊﾞﾊﾟﾋﾋﾞﾋﾟﾌﾌﾞﾌﾟﾍﾍﾞﾍﾟﾎﾎﾞﾎﾟ"
+            "ﾏﾐﾑﾒﾓｬﾔｭﾕｮﾖﾗﾘﾙﾚﾛﾜｦﾝｳﾞﾞﾟ"
+        )
+        full_width_text = dedent(
+            "ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾ"
+            "タダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポ"
+            "マミムメモャヤュユョヨラリルレロワヲンヴ゙゚"
+        )
+        self.assertEqual(full_width_text, convert_half_full_width(half_width_text))
 
 
 if __name__ == "__main__":

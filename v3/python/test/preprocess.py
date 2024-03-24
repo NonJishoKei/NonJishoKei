@@ -1,6 +1,7 @@
 """Preprocess the input text."""
 
 import re
+import unicodedata
 
 
 def del_word_ruby(input_text: str) -> str:
@@ -194,7 +195,22 @@ def del_ocr_error(input_text: str) -> str:
     return output_text
 
 
-def preprocess(input_text: str) -> str:
+def convert_half_full_width(input_text: str) -> str:
+    """Converts half-width characters to full-width characters.
+        将半角字符转换为全角字符
+
+    Args:
+        input_text (str): A string containing half-width characters.
+
+    Returns:
+        str: A string containing full-width characters.
+    """
+    output_text = ""
+    output_text = unicodedata.normalize("NFKC", input_text)
+    return output_text
+
+
+def preprocess(input_text: str, need_half2full: bool = True) -> str:
     """Preprocess the input text.
         预处理输入文本
 
@@ -207,6 +223,10 @@ def preprocess(input_text: str) -> str:
     input_text = del_ocr_error(input_text)
     if "(" in input_text:
         input_text = del_word_ruby(input_text)
+
+    if need_half2full:
+        input_text = convert_half_full_width(input_text)
+
     # 转换片假名书写的单词
     input_text = convert_kata_to_hira(input_text)
     if re.search(r"(\w{1})(々|〻|ゝ|ヽ)", input_text) is not None:
