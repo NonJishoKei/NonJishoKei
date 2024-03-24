@@ -208,8 +208,7 @@ def preprocess(input_text: str) -> str:
     if "(" in input_text:
         input_text = del_word_ruby(input_text)
     # 转换片假名书写的单词
-    if re.search(r"^[\u30a0-\u30ff]*?$", input_text) is not None:
-        input_text = convert_kata_to_hira(input_text)
+    input_text = convert_kata_to_hira(input_text)
     if re.search(r"(\w{1})(々|〻|ゝ|ヽ)", input_text) is not None:
         input_text = convert_repe_single_sign(input_text)
     if re.search(r"^(.*?)(\w{1})(ヾ|ゞ)(.*?)$", input_text) is not None:
