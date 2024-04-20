@@ -1,10 +1,25 @@
 """convert a nonjishokei to a jishokei"""
 
 import json
+import logging
 import os
+import sys
+import time
 from typing import Dict, List
 
 from preprocess import preprocess
+
+logging.basicConfig(
+    handlers=[
+        logging.FileHandler(
+            f"{time.strftime('%Y-%m-%d', time.localtime()) }.log", encoding="utf-8"
+        ),
+        logging.StreamHandler(sys.stderr),
+    ],
+    level=logging.DEBUG,
+    format="%(asctime)s %(filename)s %(levelname)s %(message)s",
+    datefmt="%a %d %b %Y %H:%M:%S",
+)
 
 
 def read_rule_file(rule_file: str) -> Dict[str, list[str]]:
@@ -61,15 +76,22 @@ def convert_conjugate(input_text: str) -> list:
     input_stem = input_text[0:-1]
     input_last_letter = input_text[-1]
     process_output_list: list[str] = []
+    # TODO 一段动词的词干必定是え段假名，对于見る这样汉字就是词干的动词特殊
     # 本程序的 input_stem 概念对应的不是一段动词语法意义上的词干
     # 今日は、寿司を**食べ**に銀座に行いきます。
     process_text = input_text + "る"
     process_output_list.append(process_text)
+    logging.debug("add %s to %s: for v1", process_text, process_output_list)
 
     jishokei_last_letter_list = conjugate_rule_dict.get(input_last_letter)
     if jishokei_last_letter_list is not None:
         for jishokei_last_letter in jishokei_last_letter_list:
             process_output_list.append(input_stem + jishokei_last_letter)
+            logging.debug(
+                "add %s to %s: for conjugate rule",
+                input_stem + jishokei_last_letter,
+                process_output_list,
+            )
 
     # 将输入的字符串作为最后一个结果返回
     # 因为输入的字符串可能就是正确的辞書型
@@ -99,6 +121,7 @@ def convert_nonjishokei(input_text: str) -> list:
     converted_conjugate_list = convert_conjugate(input_text)
     # 检查还原结果
     orthography_list: list[str] = []
+    logging.debug("all converted conjugate list: %s", converted_conjugate_list)
     for i in converted_conjugate_list:
         orthography_text = convert_orthography(i)
         if orthography_text is not None:
@@ -130,6 +153,7 @@ def scan_input_string(input_text: str) -> list:
     scan_process_list = []
     for input_index in range(len(input_text) + 1):
         scanned_input_text = input_text[0 : input_index + 1]
+        logging.debug("scanned_input_text: %s", scanned_input_text)
         scanned_input_list.append(scanned_input_text)
 
         # 特殊规则
@@ -142,6 +166,7 @@ def scan_input_string(input_text: str) -> list:
 
         scan_output_text = convert_nonjishokei(scanned_input_text)
         for i in scan_output_text:
+            logging.debug("add %s to scan_process_list", scanned_input_text)
             scan_process_list.append(i)
 
     # 返回给用户的扫描结果
@@ -157,6 +182,7 @@ def scan_input_string(input_text: str) -> list:
     # 将输入的字符串作为最后一个结果返回
     # 方便用户在程序无法推导出正确结果时快速编辑
     if input_text not in scan_output_list:
+        logging.debug("add input_text %s to scan_process_list", input_text)
         scan_output_list.append(input_text)
 
     return scan_output_list
