@@ -7,6 +7,7 @@ import glob
 import logging
 import os
 import re
+import zipfile
 from textwrap import dedent
 
 import main
@@ -18,6 +19,14 @@ os.chdir(CURRENT_PATH)
 rule_path = os.path.join(CURRENT_PATH, r"rule")
 INDEX_PATH = os.path.join(CURRENT_PATH, r"index")
 PROCESS_PATH = os.path.join(CURRENT_PATH, r"process")
+
+
+def compress_file(input_filename, output_filename):
+    """压缩文件"""
+    release_pub_path = os.path.join(CURRENT_PATH, "release_pub")
+    output_filename = os.path.join(release_pub_path, output_filename)
+    with zipfile.ZipFile(output_filename, "w") as zip_ref:
+        zip_ref.write(input_filename)
 
 
 def check_pack_file():
@@ -96,6 +105,8 @@ def pack2mdx():
     # 删除过程文件
     os.remove(process_pack_file)
     os.remove(release_pack_file)
+    update_date = datetime.datetime.now().strftime("%Y-%m-%d")
+    compress_file(mdx_file, f"NonJishoKei_v2_{update_date}.zip")
 
 
 main.inflect_nonjishokei()
