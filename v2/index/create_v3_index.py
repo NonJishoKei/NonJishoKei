@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 import unicodedata
 from typing import Dict
 
@@ -47,9 +48,41 @@ def convert_half_full_width(input_text: str) -> str:
     return output_text
 
 
+def is_all_kana(text):
+    """
+    判断一个字符串是否全部由假名构成
+
+    Args:
+        text: 要判断的字符串
+
+    Returns:
+        True 如果字符串全部由假名构成，否则 False
+    """
+
+    return re.match(r"^[\u3040-\u309F\u30A0-\u30FF]+$", text) is not None
+
+
+def has_kana(text):
+    """
+    判断一个字符串是否含有假名
+
+    Args:
+        text: 要判断的字符串
+
+    Returns:
+        True 如果字符串含有假名，否则 False
+    """
+    for char in text:
+        if (ord(char) >= 0x3040 and ord(char) <= 0x309F) or (
+            ord(char) >= 0x30A0 and ord(char) <= 0x30FF
+        ):
+            return True
+    return False
+
+
 def scan_v2_index_files(input_file: str, index_dict: dict) -> dict:
     """convert v2 index file to v3 index rule.
-        将v2 版本的索引文件转为 v3 版本
+        将 v2 版本的索引文件转为 v3 版本
 
     Args:
         input_file (str): the file path of v2 index file.
@@ -58,16 +91,35 @@ def scan_v2_index_files(input_file: str, index_dict: dict) -> dict:
     Returns:
         index_dict (dict): v3 index rule.
     """
-    with open(input_file, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            nonjishokei = line.partition("\t")[0]
-            # v3 版本会将《サボる》类似的非辞书形转为《さぼる》再进行进一步的处理
-            nonjishokei = convert_kata_to_hira(nonjishokei)
-            nonjishokei = convert_half_full_width(nonjishokei)
-            jishokei = line.partition("\t")[2]
-            index_dict.setdefault(nonjishokei, []).append(jishokei)
-        return index_dict
+    if "noun" in input_file:
+        # 将 v2 版本的名词词条添加到 v3 版本中
+        with open(input_file, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                nonjishokei = line.partition("\t")[0]
+                nonjishokei = convert_kata_to_hira(nonjishokei)
+                nonjishokei = convert_half_full_width(nonjishokei)
+                jishokei = line.partition("\t")[2]
+                if nonjishokei != jishokei:
+                    # 不向 v3 版本的索引文件中添加全是假名的词条，这种词条应该由用户自定义添加
+                    if is_all_kana(nonjishokei) is False:
+                        # 不向 v3 版本的索引文件中添加全是汉字的词条，这种词条应该由用户自定义添加
+                        if has_kana(nonjishokei):
+                            if is_all_kana(jishokei) is True:
+                                index_dict.setdefault(nonjishokei, []).append(jishokei)
+    else:
+        with open(input_file, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                nonjishokei = line.partition("\t")[0]
+                # v3 版本会将《サボる》类似的非辞书形转为《さぼる》再进行进一步的处理
+                nonjishokei = convert_kata_to_hira(nonjishokei)
+                nonjishokei = convert_half_full_width(nonjishokei)
+                jishokei = line.partition("\t")[2]
+                # v3 版本默认使用读音作为索引
+                if is_all_kana(jishokei) is True:
+                    index_dict.setdefault(nonjishokei, []).append(jishokei)
+    return index_dict
 
 
 def write_v3_index_file(output_file: str, index_dict: dict):
@@ -82,7 +134,7 @@ def write_v3_index_file(output_file: str, index_dict: dict):
         json.dump(index_dict, f, indent=None, ensure_ascii=False)
 
 
-index_v2_file_list = ["adj.txt", "godann.txt", "itidann.txt", "sahenn.txt"]
+index_v2_file_list = ["adj.txt", "godann.txt", "itidann.txt", "sahenn.txt", "noun.txt"]
 INDEX_DICT: Dict[str, list[str]] = {}
 for i in index_v2_file_list:
     scan_v2_index_files(os.path.join(CURRENT_PATH, i), INDEX_DICT)
