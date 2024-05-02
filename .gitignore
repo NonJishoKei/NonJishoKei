@@ -5,10 +5,5 @@ v3/python/test/review_v3.txt
 v3/python/test/save.txt
 v3/python/test/temp copy.txt
 v3/python/test/temp.txt
-v2/process/adj.txt
-v2/process/godann.txt
-v2/process/hiragrana.txt
-v2/process/itidann.txt
-v2/process/noun.txt
-v2/process/sahenn.txt
+v2/process/
 v2/.DS_Store
