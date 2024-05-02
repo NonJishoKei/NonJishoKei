@@ -318,4 +318,3 @@ def inflect_nonjishokei():
 
 
 init_index_file(os.path.join(CURRENT_PATH, r"index/index.txt"))
-inflect_nonjishokei()

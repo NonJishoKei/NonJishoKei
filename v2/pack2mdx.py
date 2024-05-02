@@ -2,10 +2,12 @@
 打包 mdx 文件
 """
 
+import datetime
 import glob
 import logging
 import os
 import re
+from textwrap import dedent
 
 import main
 
@@ -62,9 +64,26 @@ def check_pack_file():
     return process_pack_file, release_pack_file
 
 
+def add_description():
+    """更新描述文件"""
+    update_date = datetime.datetime.now().strftime("%Y-%m-%d")
+
+    release_pub_path = os.path.join(CURRENT_PATH, "release_pub")
+    description_text = dedent(
+        f"""<p>NonJishoKei For mdx: What You See Is What You Get</p>
+    <p>updateDate: {update_date}</p>
+    <p>For feedback: <a href="https://github.com/NoHeartPen/NonJishoKei">https://github.com/NoHeartPen/NonJishoKei</a> </p>
+    """
+    )
+    description_html_file = os.path.join(release_pub_path, "description.html")
+    with open(description_html_file, encoding="utf-8", mode="w") as f:
+        f.write(description_text)
+
+
 def pack2mdx():
     """使用 mdict-utils 打包为mdx文件"""
     process_pack_file, release_pack_file = check_pack_file()
+    add_description()
 
     release_path = os.path.join(CURRENT_PATH, "release_pub")
     title_file = os.path.join(release_path, "title.html")
