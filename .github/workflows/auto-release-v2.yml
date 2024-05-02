@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - '/v2/release_pub'
+      - '/v2/*'
 
 jobs:
   release:
