@@ -1,2 +1,9 @@
 TODO/
 *.pyc
+*.log
+v3/python/test/review_v3.txt
+v3/python/test/save.txt
+v3/python/test/temp copy.txt
+v3/python/test/temp.txt
+v2/process/
+v2/.DS_Store
