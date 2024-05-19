@@ -1,4 +1,6 @@
-"""v2版本打包"""
+"""v2版本打包
+
+"""
 
 import json
 import logging
@@ -238,7 +240,7 @@ def inflect_adj():
 def inflect_v1():
     """穷举一段动词的所有非辞書形"""
     v1_rule = init_rule(os.path.join(rule_path, r"v1.json"))
-    v1_index_file = os.path.join(INDEX_PATH, r"itidann.txt")
+    v1_index_file = os.path.join(INDEX_PATH, r"v1.txt")
     v1_process_file = os.path.join(PROCESS_PATH, r"v1.txt")
     do_inflect(v1_rule, v1_index_file, v1_process_file)
     do_v1_inflect(v1_index_file, v1_process_file)
@@ -247,7 +249,7 @@ def inflect_v1():
 def inflect_v5():
     """穷举五段动词的所有非辞書形"""
     v5_rule = init_rule(os.path.join(rule_path, r"v5.json"))
-    v5_index_file = os.path.join(INDEX_PATH, r"godann.txt")
+    v5_index_file = os.path.join(INDEX_PATH, r"v5.txt")
     v5_process_file = os.path.join(PROCESS_PATH, r"v5.txt")
     do_inflect(v5_rule, v5_index_file, v5_process_file)
 
