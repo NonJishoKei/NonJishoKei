@@ -7,3 +7,6 @@ v3/python/test/temp copy.txt
 v3/python/test/temp.txt
 v2/process/
 v2/.DS_Store
+v2/release_pub/description.html
+v2/release_pub/*.zip
+*.DS_Store
