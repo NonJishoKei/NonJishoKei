@@ -96,17 +96,9 @@ def do_inflect(rules_dict: Dict[str, list[str]], index_file: str, process_file: 
                         "%s is not included in index.txt, you should add this word to index.txt",
                         jishokei,
                     )
-                dichtml = (
-                    r'<section class="description"><a href="entry://'
-                    + jishokei
-                    + r'#description">'
-                    + jishokei
-                    + "</a>\n</section>\n</>"
-                    + "\n"
-                )
                 # 忽略用户辞典中已收录的非辞書形，
                 if variant not in INDEX_SET:
-                    output_file.write(variant + "\n" + dichtml)
+                    output_file.write(variant + "\t" + jishokei + "\n")
                 # 通过词尾假名加载相应的规则
                 variant_last_letter = variant[-1]
                 rules: list[str] = rules_dict.get(variant_last_letter, [])
@@ -118,7 +110,7 @@ def do_inflect(rules_dict: Dict[str, list[str]], index_file: str, process_file: 
                     )
                 variant_stem = variant[0:-1]
                 for rule in rules:
-                    output_file.write(variant_stem + rule + "\n" + dichtml)
+                    output_file.write(variant_stem + rule + "\t" + jishokei + "\n")
 
 
 def do_v1_inflect(index_file: str, process_file: str):
@@ -136,16 +128,9 @@ def do_v1_inflect(index_file: str, process_file: str):
                         "%s is not included in index.txt, you should add this word to index.txt",
                         jishokei,
                     )
-                dichtml = (
-                    r'<section class="description"><a href="entry://'
-                    + jishokei
-                    + r'#description">'
-                    + jishokei
-                    + "</a>\n</section>\n</>"
-                    + "\n"
-                )
+
                 variant_stem = variant[0:-1]
-                output_file.write(variant_stem + "\n" + dichtml)
+                output_file.write(variant_stem + "\t" + jishokei + "\n")
 
 
 def do_sahenn_inflect(
@@ -172,17 +157,9 @@ def do_sahenn_inflect(
                         "%s is not included in index.txt, you should add this word to index.txt",
                         jishokei,
                     )
-                dichtml = (
-                    r'<section class="description"><a href="entry://'
-                    + jishokei
-                    + r'#description">'
-                    + jishokei
-                    + "</a>\n</section>\n</>"
-                    + "\n"
-                )
                 # 忽略用户辞典中已收录的非辞書形，
                 if variant not in INDEX_SET:
-                    output_file.write(variant + "\n" + dichtml)
+                    output_file.write(variant + "\t" + jishokei + "\n")
                 # 定义穷举规则
                 rules: list[str]
                 if variant[-1] != "る":
@@ -204,7 +181,7 @@ def do_sahenn_inflect(
                     )
 
                 for rule in rules:
-                    output_file.write(variant_stem + rule + "\n" + dichtml)
+                    output_file.write(variant_stem + rule + "\t" + jishokei + "\n")
 
 
 def do_hira_inflect():
@@ -215,18 +192,12 @@ def do_hira_inflect():
         for line in input_file:
             line = line.replace("\n", "")
             if line != "":
-                dichtml = (
-                    r'<section class="description"><a href="entry://'
-                    + line
-                    + r'#description">'
-                    + line
-                    + "</a>\n</section>\n</>"
-                    + "\n"
-                )
-                output_file.write(convert_hira_to_kata(line) + "\n" + dichtml)
+                output_file.write(convert_hira_to_kata(line) + "\t" + line + "\n")
             if re.search(r"^(.*?)っと$", line):
                 # 形如 【ぐっと】的单词 添加【グッと】这样部分转为片假名的非辞書形
-                output_file.write(convert_hira_to_kata(line[0:-2]) + "ッと" + dichtml)
+                output_file.write(
+                    convert_hira_to_kata(line[0:-2]) + "ッと" + "\t" + line + "\n"
+                )
 
 
 def inflect_adj():
@@ -278,17 +249,9 @@ def inflect_noun():
                 variant = line.split("\t")[0]
                 jishokei = line.split("\t")[1]
                 if jishokei in INDEX_SET:
-                    dichtml = (
-                        r'<section class="description"><a href="entry://'
-                        + jishokei
-                        + r'#description">'
-                        + jishokei
-                        + "</a>\n</section>\n</>"
-                        + "\n"
-                    )
                     if variant not in INDEX_SET:
                         # 忽略词典中已收录的非辞書形
-                        output_file.write(variant + "\n" + dichtml)
+                        output_file.write(variant + "\t" + jishokei + "\n")
                 else:
                     logging.critical(
                         "%s is not included in index.txt, you should add this word to index.txt",

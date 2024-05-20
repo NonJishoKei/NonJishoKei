@@ -48,28 +48,23 @@ def check_pack_file():
     with open(process_pack_file, "r", encoding="utf-8") as input_file, open(
         release_pack_file, "w", encoding="utf-8"
     ) as output_file:
-        process_pack_file_text = input_file.read()
-        # 将需要打包的文件按照一个词条占一行的原则，删除那些完全一样的行
-        process_pack_file_text = process_pack_file_text.replace("\n", "")
-        process_pack_file_text = process_pack_file_text.replace("</>", "</>\n")
-        process_pack_file_lines = process_pack_file_text.split("\n")
-        for line in process_pack_file_lines:
-            process_pack_set.add(line)
-        release_pack_list = list(process_pack_set)
-
-        # 不符合mdx文件格式规范会导致打包时报错
-        error_line_reg = re.compile(r'^<section class="description">')
-        for line in release_pack_list:
-            if re.search(error_line_reg, line) is not None:
-                logging.critical("%s", line)
-                continue
-            line = line.replace(
-                '<section class="description">', '\n<section class="description">'
-            )
-            if "</a>" in line:
-                line = line.replace("</a>", "</a>\n")
-            line = line.replace("</section></>", "</section>\n</>\n")
-            output_file.writelines(line)
+        for line in input_file:
+            if line != "":
+                line = line.strip("\n")
+                nonjishokei = line.split("\t")[0]
+                jishokei = line.split("\t")[1]
+                dichtml = (
+                    r'<section class="description"><a href="entry://'
+                    + jishokei
+                    + r'#description">'
+                    + jishokei
+                    + "</a>\n</section>\n</>"
+                    + "\n"
+                )
+                process_pack_text = nonjishokei + "\n" + dichtml
+                process_pack_set.add(process_pack_text)
+        for process_pack_line in process_pack_set:
+            output_file.writelines(process_pack_line)
     return process_pack_file, release_pack_file
 
 
